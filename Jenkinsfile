@@ -4,7 +4,7 @@ pipeline {
     environment {
         PROJECT_NAME = 'flask-monitoring'
         DOCKER_IMAGE = 'flask-monitoring:latest'
-        DOCKER_NETWORK = 'flask_monitoring_ci-net'
+        DOCKER_NETWORK = 'devops-net'
         SONAR_PROJECT_KEY = 'flask-monitoring'
         SONAR_HOST_URL = 'http://sonarqube:9000'
     }
@@ -75,7 +75,7 @@ pipeline {
             }
         }
 
-        stage('Push Docker Image (Optional)') {
+        /*stage('Push Docker Image (Optional)') {
             when {
                 branch 'main'
             }
@@ -88,7 +88,7 @@ pipeline {
                     '''
                 }
             }
-        }
+        }*/
     }
 
     post {
