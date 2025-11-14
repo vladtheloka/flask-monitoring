@@ -28,9 +28,9 @@ pipeline {
             steps {
                 echo 'Running pytest with coverage...'
                 sh '''
-                docker run --rm -v $PWD:/app -w /app $DOCKER_IMAGE \
+                docker run --rm -v "$PWD":/app -w /app $DOCKER_IMAGE \
                   python3 -m pip install --no-cache-dir -r requirements.txt
-                docker run --rm -v $PWD:/app -w /app $DOCKER_IMAGE \
+                docker run --rm -v "$PWD":/app -w /app $DOCKER_IMAGE \
                   python3 -m pytest --cov=app --cov-report=xml
                 '''
             }
