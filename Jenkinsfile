@@ -30,7 +30,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_AUTH_TOKEN')]) {
+                    withSonarQubeEnv('SonarQube') {
                         echo 'Running SonarQube scan...'
                         sh """
                         docker run --rm --network ${DOCKER_NETWORK} \
