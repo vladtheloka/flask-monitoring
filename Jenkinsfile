@@ -29,20 +29,8 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                
-                    withSonarQubeEnv('SonarQube') {
-                        echo 'Running SonarQube scan...'
-                        sh """
-                        docker run --rm --network ${DOCKER_NETWORK} \
-                          -e SONAR_HOST_URL=${SONAR_HOST_URL} \
-                          -e SONAR_TOKEN=$SONAR_AUTH_TOKEN \
-                          -v "\$PWD/app":/usr/src/app \
-                          sonarsource/sonar-scanner-cli:latest \
-                          -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                          -Dsonar.sources=/usr/src/app \
-                          -Dsonar.language=py \
-                          -Dsonar.sourceEncoding=UTF-8
-                        """
+                withSonarQubeEnv('SonarQube') {
+                    sh 'sonar-scanner -Dsonar.projectKey=flask-monitoring -Dsonar.sources=app -Dsonar.language=py -Dsonar.sourceEncoding=UTF-8'
                     }
                 }
             }
