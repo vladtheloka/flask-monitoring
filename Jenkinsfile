@@ -21,9 +21,8 @@ pipeline {
             steps {
                 echo 'Running pytest with coverage...'
                 sh '''
-                docker run --rm --network $DOCKER_NETWORK -v "$PWD":/app -w /app $DOCKER_IMAGE sh -c "
-                    PYTHONPATH=/app python3 -m pytest --cov=app --cov-report=xml
-                "
+                docker run --rm --network $DOCKER_NETWORK -v "$PWD/tests":/app/tests -w /app $DOCKER_IMAGE
+                    python3 -m pytest --cov=app --cov-report=xml
                 '''
             }
         }
