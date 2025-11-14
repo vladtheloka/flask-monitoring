@@ -6,6 +6,7 @@ pipeline {
         DOCKER_NETWORK = 'devops-net'
         SONAR_HOST_URL = 'http://sonarqube:9000'
         SONAR_PROJECT_KEY = 'flask-monitoring'
+        PATH = "/opt/sonar-scanner/bin:${PATH}"
     }
 
     stages {
@@ -30,11 +31,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh "${tool 'SonarScanner'}/bin/sonar-scanner \
-                    -Dsonar.projectKey=flask-monitoring \
-                    -Dsonar.sources=app \
-                    -Dsonar.language=py \
-                    -Dsonar.sourceEncoding=UTF-8"
+                    sh 'sonar-scanner -Dsonar.projectKey=flask-monitoring -Dsonar.sources=app'
                     }
                 }
             }
