@@ -29,7 +29,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                script {
+                
                     withSonarQubeEnv('SonarQube') {
                         echo 'Running SonarQube scan...'
                         sh """
@@ -46,7 +46,7 @@ pipeline {
                     }
                 }
             }
-        }
+        
 
         stage('Quality Gate') {
             steps {
