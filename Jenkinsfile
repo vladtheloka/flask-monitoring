@@ -39,7 +39,7 @@ pipeline {
                           -v "$PWD":/usr/src \
                           sonarsource/sonar-scanner-cli:latest \
                           -Dsonar.projectKey=$SONAR_PROJECT_KEY \
-                          -Dsonar.sources=app \
+                          -Dsonar.sources=/usr/src/app \
                           -Dsonar.language=py \
                           -Dsonar.sourceEncoding=UTF-8
                         '''
