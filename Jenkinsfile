@@ -30,7 +30,11 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh 'sonar-scanner -Dsonar.projectKey=flask-monitoring -Dsonar.sources=app -Dsonar.language=py -Dsonar.sourceEncoding=UTF-8'
+                    sh "${tool 'SonarScanner'}/bin/sonar-scanner \
+                    -Dsonar.projectKey=flask-monitoring \
+                    -Dsonar.sources=app \
+                    -Dsonar.language=py \
+                    -Dsonar.sourceEncoding=UTF-8"
                     }
                 }
             }
