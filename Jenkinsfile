@@ -36,10 +36,10 @@ pipeline {
                         docker run --rm --network ${DOCKER_NETWORK} \
                           -e SONAR_HOST_URL=${SONAR_HOST_URL} \
                           -e SONAR_TOKEN=$SONAR_AUTH_TOKEN \
-                          -v "\$PWD":/usr/src \
+                          -v "\$PWD/app":/usr/src/app \
                           sonarsource/sonar-scanner-cli:latest \
                           -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                          -Dsonar.sources=app \
+                          -Dsonar.sources=/usr/src/app \
                           -Dsonar.language=py \
                           -Dsonar.sourceEncoding=UTF-8
                         """
