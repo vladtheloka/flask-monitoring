@@ -22,7 +22,7 @@ pipeline {
                 echo 'Running pytest with coverage...'
                 sh '''
                 docker run --rm --network $DOCKER_NETWORK -v "$PWD":/app -w /app $DOCKER_IMAGE sh -c "
-                    python3 -m pip install --no-cache-dir -r app/requirements.txt && \
+                    python3 -m pip install --no-cache-dir -r requirements.txt && \
                     python3 -m pytest --cov=app --cov-report=xml
                 "
                 '''
