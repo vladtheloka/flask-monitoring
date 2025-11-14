@@ -33,7 +33,7 @@ pipeline {
                     withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_AUTH_TOKEN')]) {
                         echo 'Running SonarQube scan...'
                         sh '''
-                        docker run --rm --network $DOCKER_NETWORK \
+                        docker run --rm --network devops-net \
                           -e SONAR_HOST_URL=$SONAR_HOST_URL \
                           -e SONAR_TOKEN=$SONAR_AUTH_TOKEN \
                           -v "$PWD":/usr/src \
