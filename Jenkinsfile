@@ -31,7 +31,12 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh 'sonar-scanner -Dsonar.projectKey=flask-monitoring -Dsonar.sources=app'
+                    def scannerHome = tool 'SonarScanner'
+                    sh """
+                    ${scannerHome}/bin/sonar-scanner \
+                    -Dsonar.projectKey=flask-monitoring \
+                    -Dsonar.sources=app
+                    """
                     }
                 }
             }
