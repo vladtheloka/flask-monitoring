@@ -23,7 +23,6 @@ pipeline {
                 sh '''
                 docker run --rm --network $DOCKER_NETWORK -v "$PWD/tests":/app/tests -w /app $DOCKER_IMAGE \
                     python3 -m pytest --cov=app --cov-report=xml
-                "
                 '''
             }
         }
