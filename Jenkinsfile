@@ -16,9 +16,9 @@ pipeline {
             steps {
                 echo 'Building Docker image...'
                 sh '''
-                    docker build \
-                        --progress=plain \
-                        --mount type=cache,target=/root/.cache/pip \
+                    # Включаем BuildKit
+                    DOCKER_BUILDKIT=1 docker build \
+                        --build-arg PIP_CACHE_DIR=/root/.cache/pip \
                         -t $DOCKER_IMAGE .
                 '''
             }
