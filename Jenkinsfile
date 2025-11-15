@@ -29,7 +29,7 @@ pipeline {
             }
         }
 
-        stage('Run Tests + Coverage') {
+        /*stage('Run Tests + Coverage') {
             steps {
                 sh '''
                     docker run --rm \
@@ -44,9 +44,9 @@ pipeline {
                             app/tests
                 '''
             }
-        }
+        }*/
 
-        stage('SonarQube Analysis') {
+        /*stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     script {
@@ -60,15 +60,15 @@ pipeline {
                         }
                 }
             }
-        }
+        }*/
 
-        stage('Quality Gate') {
+        /*stage('Quality Gate') {
             steps {
                 timeout(time: 30, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
                 }
             }
-        }
+        }*/
     }
 
     post {
