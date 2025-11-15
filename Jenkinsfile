@@ -36,9 +36,10 @@ pipeline {
             steps {
                 echo 'Running pytest with coverage...'
                 sh '''
-                docker run --rm --network $DOCKER_NETWORK $DOCKER_IMAGE \
+                docker run --rm --network $DOCKER_NETWORK \
                     -v "$PWD":/app \
                     -v pytest-cache:/app/.pytest_cache \
+                    $DOCKER_IMAGE \
                     python3 -m pytest --disable-warnings --maxfail=1 \
                     --cov=app --cov-report=xml:coverage.xml /app/tests
                 '''
