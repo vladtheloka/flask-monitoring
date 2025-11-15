@@ -47,6 +47,7 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
+            steps{
             script {
                 def scannerHome = tool 'SonarScanner'
                 withSonarQubeEnv('SonarQube') {
@@ -62,7 +63,7 @@ pipeline {
                 }
             }
         }
-
+        }
         stage('Quality Gate') {
             steps {
                 timeout(time: 30, unit: 'MINUTES') {
