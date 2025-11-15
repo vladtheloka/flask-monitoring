@@ -27,7 +27,7 @@ pipeline {
                 echo 'Running flake8 and black check...'
                 sh '''
                 docker run --rm --network $DOCKER_NETWORK $DOCKER_IMAGE \
-                    bash -c "black app && flake8 app"
+                    bash -c "black --check app && flake8 app"
                 '''
             }
         }
@@ -35,16 +35,10 @@ pipeline {
         stage('Run Tests') {
             steps {
                 echo 'Running pytest with coverage...'
-                sh '''
-                docker run --rm \
-                --network $DOCKER_NETWORK \
-                -v "$PWD":/app \
-                -v pytest-cache:/app/.pytest_cache \
-                -w /app $DOCKER_IMAGE bash -c "
-                    export PYTHONPATH=/app &&
-                    python3 -m pytest --disable-warnings --maxfail=1 --cov=app --cov-report=xml tests
-                "
-                '''
+                sh """
+                docker run --rm --network $DOCKER_NETWORK -v "$PWD":/app -w /app $DOCKER_IMAGE \
+                    python3 -m pytest --disable-warnings --maxfail=1 --cov=app --cov-report=xml:coverage.xml app/tests
+                """
             }
         }
 
@@ -60,6 +54,7 @@ pipeline {
                                 -Dsonar.python.coverage.reportPaths=coverage.xml \
                                 -Dsonar.scanner.skipJreProvisioning=true \
                                 -Dsonar.scanner.caches.directory=.sonar/cache
+                                -Dsonar.python.coverage.reportPaths=coverage.xml
                         """
                     }
                 }
