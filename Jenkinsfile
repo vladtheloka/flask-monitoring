@@ -7,7 +7,7 @@ pipeline {
         SONAR_HOST_URL = 'http://sonarqube:9000'
         SONAR_PROJECT_KEY = 'flask-monitoring'
         PATH = "/opt/sonar-scanner/bin:${PATH}"
-        PIP_CACHE_DIR = "/root/.cache/pip"
+        PIP_CACHE_VOLUME = 'pip-cache'
     }
 
     stages {
@@ -15,14 +15,10 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building Docker image with BuildKit and pip cache...'
-                sh '''
-                export DOCKER_BUILDKIT=1
-                docker build \
-                    --build-arg PIP_CACHE_DIR=$PIP_CACHE_DIR \
-                    --cache-from=type=local,src=$PIP_CACHE_DIR \
-                    --cache-to=type=local,dest=$PIP_CACHE_DIR \
-                    -t $DOCKER_IMAGE .
-                '''
+                sh """
+                    docker build --build-arg PIP_CACHE_DIR=/root/.cache/pip \
+                        -t $DOCKER_IMAGE .
+                """
             }
         }
 

@@ -11,8 +11,8 @@ WORKDIR /app
 COPY app/requirements.txt .
 
 # Устанавливаем зависимости с кэшем
-RUN --mount=type=cache,target=${PIP_CACHE_DIR} \
-    pip install --no-cache-dir -r requirements.txt
+RUN python3 -m pip install --no-cache-dir -r requirements.txt \
+    --cache-dir $PIP_CACHE_DIR
 
 # Копируем остальной код
 COPY . .
