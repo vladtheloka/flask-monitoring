@@ -1,5 +1,5 @@
 from app.utils import get_cpu_usage, get_memory_usage
-get_disk_usage, top_processes
+from app.utils import get_disk_usage, top_processes
 
 def test_cpu_usage():
     assert 0 <= get_cpu_usage() <= 100
