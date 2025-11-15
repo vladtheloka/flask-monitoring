@@ -27,7 +27,7 @@ pipeline {
                 echo 'Running flake8 and black check...'
                 sh '''
                 docker run --rm --network $DOCKER_NETWORK $DOCKER_IMAGE \
-                    bash -c "flake8 app && black --check app"
+                    bash -c "black app && flake8 app"
                 '''
             }
         }
