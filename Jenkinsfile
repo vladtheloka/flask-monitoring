@@ -41,7 +41,7 @@ pipeline {
             -w /app \
             $DOCKER_IMAGE \
             python3 -m pytest --disable-warnings --maxfail=1 \
-                --cov=app --cov-report=xml:coverage.xml app/tests
+                --cov=app/app --cov-report=xml:coverage.xml app/tests
         '''
             }
         }
