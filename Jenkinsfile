@@ -11,7 +11,6 @@ pipeline {
     }
 
     stages {
-
         stage('Build') {
             steps {
                 echo 'Building Docker image with BuildKit and pip cache...'
@@ -35,32 +34,31 @@ pipeline {
         stage('Run Tests') {
             steps {
                 echo 'Running pytest with coverage...'
-                sh """
+                sh '''
                 docker run --rm --network $DOCKER_NETWORK \
-                -v "$PWD":/app \
-                -v pytest-cache:/app/.pytest_cache \
-                -w /app \
-                $DOCKER_IMAGE \
-                python3 -m pytest --disable-warnings --maxfail=1 --cov=app --cov-report=xml:coverage.xml app/tests
-                """
+            -v "$PWD":/app \
+            -v pytest-cache:/app/.pytest_cache \
+            -w /app \
+            $DOCKER_IMAGE \
+            python3 -m pytest --disable-warnings --maxfail=1 \
+                --cov=app --cov-report=xml:coverage.xml app/tests
+        '''
             }
         }
 
         stage('SonarQube Analysis') {
-            steps {
+            script {
+                def scannerHome = tool 'SonarScanner'
                 withSonarQubeEnv('SonarQube') {
-                    script {
-                        def scannerHome = tool 'SonarScanner'
-                        sh """
-                            ${scannerHome}/bin/sonar-scanner \
-                                -Dsonar.projectKey=$SONAR_PROJECT_KEY \
-                                -Dsonar.sources=app \
-                                -Dsonar.python.coverage.reportPaths=coverage.xml \
-                                -Dsonar.scanner.skipJreProvisioning=true \
-                                -Dsonar.scanner.caches.directory=.sonar/cache
-                                -Dsonar.python.coverage.reportPaths=coverage.xml
-                        """
-                    }
+                    sh """
+                        ${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=$SONAR_PROJECT_KEY \
+                            -Dsonar.sources=app \
+                            -Dsonar.python.coverage.reportPaths=coverage.xml \
+                            -Dsonar.scanner.skipJreProvisioning=true \
+                            -Dsonar.scanner.caches.directory=.sonar/cache
+                            -Dsonar.python.coverage.reportPaths=coverage.xml
+                    """
                 }
             }
         }
