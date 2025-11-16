@@ -25,7 +25,7 @@ pipeline {
                 sh '''
                     docker run --rm \
                     --network $DOCKER_NETWORK \
-                    -v "$PWD/app":/app \
+                    -v "$PWD":/app \
                     -w /app \
                     -e PYTHONPATH=/app \
                       $DOCKER_IMAGE \
@@ -34,7 +34,7 @@ pipeline {
             }
         }
 
-        /*stage('Run Tests + Coverage') {
+        stage('Run Tests + Coverage') {
             steps {
                 sh '''
                     docker run --rm \
@@ -49,7 +49,7 @@ pipeline {
                             app/tests
                 '''
             }
-        }*/
+        }
 
         /*stage('SonarQube Analysis') {
             steps {
