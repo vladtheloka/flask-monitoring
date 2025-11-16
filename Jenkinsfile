@@ -23,7 +23,12 @@ pipeline {
         stage('Code Quality: Black + Flake8') {
             steps {
                 sh '''
-                    docker run --rm --network $DOCKER_NETWORK $DOCKER_IMAGE \
+                    docker run --rm \
+                    --network $DOCKER_NETWORK \
+                    -v "$PWD/app":/app \
+                    -w /app \
+                    -e PYTHONPATH=/app \
+                      $DOCKER_IMAGE \
                     bash -c "flake8 app && black app"
                 '''
             }
