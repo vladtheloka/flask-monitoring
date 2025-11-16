@@ -2,83 +2,78 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'flask-monitoring:latest'
-        DOCKER_NETWORK = 'devops-net'
         SONAR_HOST_URL = 'http://sonarqube:9000'
         SONAR_PROJECT_KEY = 'flask-monitoring'
-        PYTHONPATH = "/app"
+        REGISTRY = 'justtheloka.com'
+        IMAGE = 'flask-monitoring-production'
+        TAG = 'latest'
+        FULL_IMAGE = "${REGISTRY}/${IMAGE}:${TAG}"
     }
 
     stages {
-
-        stage('Build Docker Image') {
+        stage('Checkout') {
             steps {
-                sh '''
+                checkout scm
+            }
+        }
+
+        stage('Build Docker image') {
+            steps {
+                sh """
                     export DOCKER_BUILDKIT=1
                     docker build -t $DOCKER_IMAGE .
-                '''
+                """
             }
         }
 
-        stage('Code Quality: Black + Flake8') {
+        stage('Lint (inside Docker)') {
             steps {
-                sh '''
-                    docker run --rm \
-                    --network $DOCKER_NETWORK \
-                    -v "$WORKSPACE/app":/app \
-                    -w /app \
-                    -e PYTHONPATH=/app \
-                      $DOCKER_IMAGE \
-                    bash -c "flake8 . && black ."
-                '''
+                sh """
+                    docker run --rm ${FULL_IMAGE} flake8 .
+                    docker run --rm ${FULL_IMAGE} black . --check
+                """
             }
         }
 
-        /*stage('Run Tests + Coverage') {
+        stage('Tests (inside Docker)') {
             steps {
-                sh '''
-                    docker run --rm \
-                        --network $DOCKER_NETWORK \
-                        -v "$PWD":/app \
-                        -w /app \
-                        -e PYTHONPATH=/app \
-                        $DOCKER_IMAGE \
-                        python3 -m pytest \
-                            --disable-warnings --maxfail=1 \
-                            --cov=app --cov-report=xml:coverage.xml \
-                            app/tests
-                '''
+                sh """
+                    docker run --rm ${FULL_IMAGE} python3 -m pytest \
+                    --disable-warnings --maxfail=1 \
+                    --cov=app --cov-report=xml:coverage.xml
+                """
             }
-        }*/
+        }
 
-        /*stage('SonarQube Analysis') {
+        stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    script {
-                        sh '''
-                            sonar-scanner \
+                        scannerHome = tool 'SonarScanner'
+                        sh """
+                            ${scannerHome}/bin/sonar-scanner \
                                 -Dsonar.projectKey=$SONAR_PROJECT_KEY \
-                                -Dsonar.sources=app \
+                                -Dsonar.sources=. \
                                 -Dsonar.python.coverage.reportPaths=coverage.xml \
-                                -Dsonar.host.url=$SONAR_HOST_URL
-                        '''
-                        }
+                                -Dsonar.scanner.skipJreProvisioning=true \
+                                -Dsonar.scanner.caches.directory=.sonar/cache
+                        """
                 }
             }
-        }*/
+        }
 
-        /*stage('Quality Gate') {
+        stage('Quality Gate') {
             steps {
                 timeout(time: 30, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
                 }
             }
-        }*/
+        }
     }
 
     post {
         always {
             echo 'Pipeline finished.'
+            cleanWs() // Clean workspace after build
         }
     }
 }
