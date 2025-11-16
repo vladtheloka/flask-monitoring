@@ -48,6 +48,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
+                    script {
                         def scannerHome = tool 'SonarScanner'
                         sh """
                             ${scannerHome}/bin/sonar-scanner \
@@ -57,6 +58,7 @@ pipeline {
                                 -Dsonar.scanner.skipJreProvisioning=true \
                                 -Dsonar.scanner.caches.directory=.sonar/cache
                         """
+                    }
                 }
             }
         }
