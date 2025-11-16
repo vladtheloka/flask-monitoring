@@ -29,7 +29,7 @@ pipeline {
                     -w /app \
                     -e PYTHONPATH=/app \
                       $DOCKER_IMAGE \
-                    bash -c "flake8 app && black app"
+                    bash -c "flake8 . && black ."
                 '''
             }
         }
