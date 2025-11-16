@@ -24,7 +24,7 @@ pipeline {
             steps {
                 sh '''
                     docker run --rm --network $DOCKER_NETWORK $DOCKER_IMAGE \
-                    bash -c "flake8 app && black app""
+                    bash -c "flake8 app && black app"
                 '''
             }
         }
