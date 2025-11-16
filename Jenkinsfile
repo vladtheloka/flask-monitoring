@@ -15,7 +15,7 @@ pipeline {
             steps {
                 sh """
                     export DOCKER_BUILDKIT=1
-                    docker build -t $DOCKER_IMAGE .
+                    docker build -t ${FULL_IMAGE} .
                 """
             }
         }
