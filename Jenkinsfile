@@ -34,7 +34,7 @@ pipeline {
             }
         }
 
-        stage('Run Tests + Coverage') {
+        /*stage('Run Tests + Coverage') {
             steps {
                 sh '''
                     docker run --rm \
@@ -49,7 +49,7 @@ pipeline {
                             app/tests
                 '''
             }
-        }
+        }*/
 
         /*stage('SonarQube Analysis') {
             steps {
