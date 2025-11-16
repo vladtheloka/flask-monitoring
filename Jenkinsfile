@@ -25,7 +25,7 @@ pipeline {
                 sh '''
                     docker run --rm \
                     --network $DOCKER_NETWORK \
-                    -v "$PWD/app":/app \
+                    -v "$WORKSPACE/app":/app \
                     -w /app \
                     -e PYTHONPATH=/app \
                       $DOCKER_IMAGE \
