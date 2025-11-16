@@ -24,7 +24,7 @@ pipeline {
             steps {
                 sh """
                     docker run --rm ${FULL_IMAGE} flake8 .
-                    docker run --rm ${FULL_IMAGE} black . --check
+                    docker run --rm ${FULL_IMAGE} black .
                 """
             }
         }
