@@ -21,8 +21,8 @@ pipeline {
             steps {
                 sh """
                      export DOCKER_BUILDKIT=1
-                     docker build -t ${FULL_IMAGE} . \
-                     docker run -d --name ${IMAGE} ${FULL_IMAGE} \
+                     docker build -t ${FULL_IMAGE} .
+                     docker run -d --name ${IMAGE} ${FULL_IMAGE}
                      docker ps -a
                 """
             }
