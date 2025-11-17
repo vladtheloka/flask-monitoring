@@ -32,7 +32,7 @@ pipeline {
                 sh """
                     docker run -d --name ${TEST_APP} ${FULL_IMAGE}
                     docker ps -a
-                    docker exec ${TEST_APP} python3 -m unittest discover
+                    docker exec ${TEST_APP} python3 -m unittest discover -s restmon -p 'test_*.py'
                 """
             }
             post {
