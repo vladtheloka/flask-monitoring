@@ -7,9 +7,6 @@ ENV PIP_CACHE_DIR=${PIP_CACHE_DIR}
 
 WORKDIR /restmon
 
-# Устанавливаем системные зависимости
-RUN apt add --update python py-pip gcc linux-headers make musl-dev python-dev
-
 # Копируем только requirements для кэширования зависимостей
 COPY requirements.txt /src/requirements.txt
 
