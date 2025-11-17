@@ -19,7 +19,12 @@ pipeline {
     stages {
         stage('Build Docker image') {
             steps {
-                buildApp()
+                sh """
+                     export DOCKER_BUILDKIT=1 \
+                     docker build -t ${FULL_IMAGE} . \
+                     docker run -d --name app api \
+                    docker ps -a
+                """
             }
         }
 
@@ -42,11 +47,11 @@ pipeline {
 
         stage('Run Unit Tests') {
             steps {
-                runUnitTests()
+                sh('docker exec app python3 -m unittest discover')
             }
             post {
                 always {
-                    afterTests()
+                    sh('docker rm -f app')
                 }
             }
         }
@@ -81,21 +86,4 @@ pipeline {
             cleanWs() // Clean workspace after build
         }
     }
-}
-
-buildApp {
-    sh """
-        export DOCKER_BUILDKIT=1 \
-        docker build -t ${FULL_IMAGE} . \
-        docker run -d --name app api \
-        docker ps -a
-    """
-}
-
-runUnitTests {
-    sh('docker exec app python3 -m unittest discover')
-}
-
-afterTests {
-    sh('docker rm -f app')
 }
