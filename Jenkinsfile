@@ -23,8 +23,7 @@ pipeline {
         stage('Lint (inside Docker)') {
             steps {
                 sh """
-                    docker run --rm ${FULL_IMAGE} flake8 .
-                    docker run --rm ${FULL_IMAGE} black .
+                    docker run --rm ${FULL_IMAGE} bash -c ' flake8 . && black . '
                 """
             }
         }
@@ -42,17 +41,14 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    script {
-                        def scannerHome = tool 'SonarScanner'
                         sh """
-                            ${scannerHome}/bin/sonar-scanner \
+                            ${tool('SonarScanner')}/bin/sonar-scanner \
                                 -Dsonar.projectKey=$SONAR_PROJECT_KEY \
                                 -Dsonar.sources=. \
                                 -Dsonar.python.coverage.reportPaths=coverage.xml \
                                 -Dsonar.scanner.skipJreProvisioning=true \
                                 -Dsonar.scanner.caches.directory=.sonar/cache
                         """
-                    }
                 }
             }
         }
