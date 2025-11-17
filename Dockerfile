@@ -8,15 +8,14 @@ ENV PIP_CACHE_DIR=${PIP_CACHE_DIR}
 WORKDIR /restmon
 
 # Копируем только requirements для кэширования зависимостей
-COPY requirements.txt /src/requirements.txt
+COPY requirements.txt .
 
 # Устанавливаем зависимости с использованием кэша
 RUN python3 -m pip install --no-cache-dir -r requirements.txt \
     --cache-dir $PIP_CACHE_DIR
 
 # Копируем остальной код
-COPY restmon/ /src
-COPY restmon /src/restmon
+COPY restmon/ ./restmon
 
 # Запускаем приложение
-CMD python /src/api.py
+CMD ["python", "restmon/api.py"]

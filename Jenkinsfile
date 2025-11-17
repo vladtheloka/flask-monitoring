@@ -22,9 +22,20 @@ pipeline {
                 sh """
                      export DOCKER_BUILDKIT=1
                      docker build -t ${FULL_IMAGE} . \
-                     docker run -d --name app api \
+                     docker run -d --name ${IMAGE} ${FULL_IMAGE} \
                      docker ps -a
                 """
+            }
+        }
+
+        stage('Run Unit Tests') {
+            steps {
+                sh('docker exec app python3 -m unittest discover')
+            }
+            post {
+                always {
+                    sh('docker rm -f app')
+                }
             }
         }
 
@@ -42,17 +53,6 @@ pipeline {
                     --disable-warnings --maxfail=1 \
                     --cov=. --cov-report=xml:coverage.xml
                 """
-            }
-        }
-
-        stage('Run Unit Tests') {
-            steps {
-                sh('docker exec app python3 -m unittest discover')
-            }
-            post {
-                always {
-                    sh('docker rm -f app')
-                }
             }
         }
 
