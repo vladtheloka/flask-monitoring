@@ -30,7 +30,7 @@ pipeline {
 
         stage('Run Unit Tests') {
             steps {
-                sh('docker exec app python3 -m unittest discover')
+                sh('docker exec ${IMAGE} python3 -m unittest discover')
             }
             post {
                 always {
