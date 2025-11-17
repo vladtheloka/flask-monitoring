@@ -1,3 +1,6 @@
+from flask_restful import Resource
+
+import math
 import psutil
 
 class getMemory(Resource):
