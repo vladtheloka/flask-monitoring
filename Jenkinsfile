@@ -9,12 +9,10 @@ pipeline {
 
     environment {
         SONAR_HOST_URL = 'http://sonarqube:9000'
-        SONAR_PROJECT_KEY = 'flask-monitoring'
-        REGISTRY = 'justtheloka.com'
-        IMAGE = 'flask-monitoring-production'
+        SONAR_PROJECT_KEY = 'restmon-sonar-project'
+        IMAGE_NAME = 'restmon'
         TAG = 'latest'
-        FULL_IMAGE = "${REGISTRY}/${IMAGE}:${TAG}"
-        TEST_APP = 'restmon_test'
+
     }
 
     stages {
@@ -22,42 +20,29 @@ pipeline {
             steps {
                 sh """
                      export DOCKER_BUILDKIT=1
-                     docker build -t ${FULL_IMAGE} .
+                     docker build -t ${IMAGE_NAME}:${TAG} .
                 """
+            }
+        }
+
+        stage('Lint (inside Docker)') {
+            steps {
+                sh("docker run --rm ${IMAGE_NAME}:${TAG} bash -c ' black . && flake8 . '")
             }
         }
 
         stage('Run Unit Tests') {
             steps {
                 sh """
-                    docker run -d --name ${TEST_APP} ${FULL_IMAGE}
-                    docker ps -a
-                    docker exec ${TEST_APP} python3 -m unittest discover -s restmon -p 'test_*.py'
+                    docker run --rm ${IMAGE_NAME}:${TAG} \
+                    bash -c 'pytest /tests --junitxml=/coverage/junit.xml \
+                    --cov=restmon --cov-report=xml:/coverage/coverage.xml'
                 """
             }
             post {
                 always {
-                    sh """
-                         docker rm -f ${TEST_APP}
-                """
+                    junit 'coverage/junit.xml'
                 }
-            }
-        }
-
-        stage('Lint (inside Docker)') {
-            steps {
-                sh("docker run --rm ${FULL_IMAGE} bash -c ' black . && flake8 . '")
-            }
-        }
-
-        stage('Coverage Tests') {
-            steps {
-                sh """
-                    docker run --rm ${FULL_IMAGE} \
-                    python3 -m pytest \
-                    --disable-warnings --maxfail=1 \
-                    --cov=. --cov-report=xml:coverage.xml
-                """
             }
         }
 
@@ -66,9 +51,9 @@ pipeline {
                 withSonarQubeEnv('SonarQube') {
                         sh """
                             ${tool('SonarScanner')}/bin/sonar-scanner \
-                                -Dsonar.projectKey=$SONAR_PROJECT_KEY \
-                                -Dsonar.sources=. \
-                                -Dsonar.python.coverage.reportPaths=coverage.xml \
+                                -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                                -Dsonar.sources=restmon \
+                                -Dsonar.python.coverage.reportPaths=coverage/coverage.xml \
                                 -Dsonar.scanner.skipJreProvisioning=true \
                                 -Dsonar.scanner.caches.directory=.sonar/cache
                         """
