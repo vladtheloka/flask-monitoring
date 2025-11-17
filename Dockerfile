@@ -15,8 +15,8 @@ RUN python3 -m pip install --no-cache-dir -r requirements.txt \
     --cache-dir $PIP_CACHE_DIR
 
 # Копируем остальной код
-COPY restmon/ /restmon/restmon
-COPY tests /restmon/tests
+COPY restmon/ /restmon
+COPY tests /tests
 COPY pytest.ini .
 
 # Запускаем приложение
