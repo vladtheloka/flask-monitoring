@@ -14,6 +14,7 @@ pipeline {
         IMAGE = 'flask-monitoring-production'
         TAG = 'latest'
         FULL_IMAGE = "${REGISTRY}/${IMAGE}:${TAG}"
+        TEST_APP = 'restmon_test'
     }
 
     stages {
@@ -22,8 +23,6 @@ pipeline {
                 sh """
                      export DOCKER_BUILDKIT=1
                      docker build -t ${FULL_IMAGE} .
-                     docker run -d --name ${IMAGE} ${FULL_IMAGE}
-                     docker ps -a
                 """
             }
         }
@@ -31,7 +30,9 @@ pipeline {
         stage('Run Unit Tests') {
             steps {
                 sh """
-                     docker exec ${FULL_IMAGE} python3 -m unittest discover
+                    docker run -d --name ${TEST_APP} ${FULL_IMAGE}
+                    docker ps -a
+                    docker exec ${TEST_APP} python3 -m unittest discover
                 """
             }
             post {
