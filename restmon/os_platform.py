@@ -1,15 +1,16 @@
-from subprocess import Popen,PIPE
+import subprocess
 from flask_restful import Resource
 
-class getPlatform(Resource):
-	def get(self):
-		kernel=Popen(['uname','-r'],stdout=PIPE).communicate() \
-		[0].rstrip('\n')
-		hostname=Popen(['uname','-n'],stdout=PIPE).communicate() \
-		[0].rstrip('\n')
-		architecture=Popen(['uname','-m'],stdout=PIPE).communicate() \
-		[0].rstrip('\n')
-		os=Popen(['uname','-o'],stdout=PIPE).communicate() \
-		[0].rstrip('\n')
-		return {'kernelversion' : kernel, 'operatingsystem' : os,'hostname' \
-		: hostname, 'architecture' : architecture}
+
+def run(cmd):
+    return subprocess.check_output(cmd).strip()
+
+
+class GetPlatform(Resource):
+    def get(self):
+        return {
+            'kernelversion': run(['uname', '-r']),
+            'hostname': run(['uname', '-n']),
+            'architecture': run(['uname', '-m']),
+            'operatingsystem': run(['uname', '-o']),
+        }
