@@ -23,7 +23,7 @@ pipeline {
         stage('Lint (inside Docker)') {
             steps {
                 sh """
-                    docker run --rm ${FULL_IMAGE} bash -c ' flake8 . && black . '
+                    docker run --rm ${FULL_IMAGE} bash -c ' black . && flake8 . '
                 """
             }
         }
