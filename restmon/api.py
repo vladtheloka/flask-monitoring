@@ -1,9 +1,9 @@
 from flask import Flask
 from flask_restful import Resource, Api
 
-import resources
-import os_platform
-import os
+import restmon.resources
+import restmon.os_platform
+import restmon.os
 
 app = Flask(__name__)
 api = Api(app)
