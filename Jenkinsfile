@@ -23,7 +23,7 @@ pipeline {
                      export DOCKER_BUILDKIT=1 \
                      docker build -t ${FULL_IMAGE} . \
                      docker run -d --name app api \
-                    docker ps -a
+                     docker ps -a
                 """
             }
         }
