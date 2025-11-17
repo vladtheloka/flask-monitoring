@@ -1,13 +1,13 @@
-from flask import Blueprint, jsonify, flask
+from flask import Blueprint, jsonify, Flask
 from .utils import get_cpu_usage, get_memory_usage 
 from .utils import get_disk_usage, top_processes
-from .main import main_bp
-
-main_bp = Blueprint('main', __name__)
 
 def create_app():
     app = Flask(__name__)
     app.register_blueprint(main_bp, url_prefix='/api')
+    return app
+
+main_bp = Blueprint('main', __name__)
 
 @main_bp.route('/health', methods=['GET'])
 def health():
@@ -24,5 +24,3 @@ def stats():
 @main_bp.route('/processes', methods=['GET'])
 def processes():
     return jsonify({"top_processes": top_processes()})
-
-return app
