@@ -35,12 +35,11 @@ pipeline {
             steps {
                 sh """
                     docker run --rm \
-                    --network $DOCKER_NETWORK \
-                    -v "$PWD":/app \
+                    -v "$WORKSPACE":/app \
                     -w /app \
                     -e PYTHONPATH=/app \
                     $DOCKER_IMAGE \
-                    pytest --cov=restmon --cov-report=xml:coverage.xml tests
+                    pytest -v --cov=restmon --cov-report=xml:coverage.xml tests
                 """
             }
         }
