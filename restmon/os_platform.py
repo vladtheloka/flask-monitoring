@@ -1,5 +1,3 @@
-from flask import Flask
-from flask_restful import Resource, Api
 from subprocess import Popen,PIPE
 
 class getPlatform(Resource):
