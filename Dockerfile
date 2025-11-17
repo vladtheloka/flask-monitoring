@@ -5,7 +5,7 @@ FROM python:3.12-slim
 ARG PIP_CACHE_DIR=/root/.cache/pip
 ENV PIP_CACHE_DIR=${PIP_CACHE_DIR}
 
-WORKDIR /restmon
+WORKDIR /app
 
 # Копируем только requirements для кэширования зависимостей
 COPY requirements.txt .
@@ -15,9 +15,9 @@ RUN python3 -m pip install --no-cache-dir -r requirements.txt \
     --cache-dir $PIP_CACHE_DIR
 
 # Копируем остальной код
-COPY restmon/ /restmon
-COPY tests /tests
-COPY pytest.ini .
+COPY restmon/ ./restmon/
+COPY tests ./tests/
+COPY pytest.ini ./
 
-# Запускаем приложение
-CMD ["python", "-m", "restmon.api"]
+# Запускаем тесты с покрытием
+CMD ["pytest", "--disable-warnings", "--maxfail=1", "--cov=restmon", "--cov-report=xml:coverage.xml", "tests"]

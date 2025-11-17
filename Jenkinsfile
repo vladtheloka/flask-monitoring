@@ -34,15 +34,14 @@ pipeline {
         stage('Run Unit Tests') {
             steps {
                 sh """
-                    docker run --rm ${IMAGE_NAME}:${TAG} \
-                    bash -c 'pytest /tests --junitxml=/coverage/junit.xml \
-                    --cov=restmon --cov-report=xml:/coverage/coverage.xml'
+                    docker run --rm \
+                    --network $DOCKER_NETWORK \
+                    -v "$PWD":/app \
+                    -w /app \
+                    -e PYTHONPATH=/app \
+                    $DOCKER_IMAGE \
+                    pytest --cov=restmon --cov-report=xml:coverage.xml tests
                 """
-            }
-            post {
-                always {
-                    junit 'coverage/junit.xml'
-                }
             }
         }
 
