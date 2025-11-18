@@ -35,7 +35,7 @@ pipeline {
             steps {
                 sh """
                     docker run --rm \
-                    $DOCKER_IMAGE \
+                    ${IMAGE_NAME}:${TAG} \
                     python3 -m pytest -v --cov=restmon --cov-report=xml:coverage.xml tests
                 """
             }
