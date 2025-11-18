@@ -2,7 +2,7 @@ from flask_restful import Resource
 import psutil
 
 
-class GetMemory(Resource):
+class getMemory(Resource):
     def get(self):
         mem = psutil.virtual_memory()
         return {
@@ -12,7 +12,7 @@ class GetMemory(Resource):
         }
 
 
-class GetCPU(Resource):
+class getCPU(Resource):
     def get(self):
         cpu = psutil.cpu_times()
         return {
@@ -23,7 +23,7 @@ class GetCPU(Resource):
         }
 
 
-class GetCPUPercent(Resource):
+class getCPUPercent(Resource):
     def get(self):
         cpu = psutil.cpu_times_percent(interval=1, percpu=False)
         return {
@@ -34,7 +34,7 @@ class GetCPUPercent(Resource):
         }
 
 
-class GetStorage(Resource):
+class getStorage(Resource):
     def get(self):
         storage = psutil.disk_usage('/')
         return {
@@ -45,6 +45,6 @@ class GetStorage(Resource):
         }
 
 
-class FrontPage(Resource):
+class frontPage(Resource):
     def get(self):
         return {'Hello': 'World'}

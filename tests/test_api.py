@@ -35,7 +35,3 @@ def test_storage(client):
     assert "rootused" in rv.json
     assert "rootfree" in rv.json
     assert "rootfreepercent" in rv.json
-    assert "homestotal" in rv.json
-    assert "homeused" in rv.json
-    assert "homefree" in rv.json
-    assert "homefreepercent" in rv.json

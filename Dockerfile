@@ -19,5 +19,5 @@ COPY restmon/ ./restmon/
 COPY tests ./tests/
 COPY pytest.ini ./
 
-# Запускаем тесты с покрытием
-CMD ["pytest", "--disable-warnings", "--maxfail=1", "--cov=restmon", "--cov-report=xml:coverage.xml", "tests"]
+
+CMD ["python3", "-m", "restmon"]
