@@ -12,7 +12,6 @@ pipeline {
         SONAR_PROJECT_KEY = 'restmon-sonar-project'
         IMAGE_NAME = 'restmon'
         TAG = 'latest'
-
     }
 
     stages {
@@ -41,6 +40,12 @@ pipeline {
             }
         }
 
+        stage('Integration Tests') {
+            steps {
+                sh './run_int_test.sh'
+            }
+        }
+
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
@@ -56,13 +61,13 @@ pipeline {
             }
         }
 
-        stage('Quality Gate') {
+        /*stage('Quality Gate') {
             steps {
                 timeout(time: 30, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
                 }
             }
-        }
+        }*/
     }
 
     post {

@@ -17,7 +17,7 @@ RUN python3 -m pip install --no-cache-dir -r requirements.txt \
 # Копируем остальной код
 COPY restmon/ ./restmon/
 COPY tests ./tests/
+COPY tests_integration ./tests_integration/
 COPY pytest.ini ./
-
 
 CMD ["python3", "-m", "restmon"]
