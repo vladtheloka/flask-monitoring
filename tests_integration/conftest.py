@@ -26,4 +26,5 @@ def run_compose():
     yield
 
     # остановить compose
-    subprocess.run(["docker", "compose", "down", "-v"], cwd="tests_integration")
+    subprocess.run(["docker", "compose", "down", "-v"], 
+    cwd="tests_integration")
