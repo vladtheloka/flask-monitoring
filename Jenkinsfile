@@ -35,11 +35,8 @@ pipeline {
             steps {
                 sh """
                     docker run --rm \
-                    -v "$WORKSPACE":/app \
-                    -w /app \
-                    -e PYTHONPATH=/app \
                     $DOCKER_IMAGE \
-                    pytest -v --cov=restmon --cov-report=xml:coverage.xml tests
+                    python3 -m pytest -v --cov=restmon --cov-report=xml:coverage.xml tests
                 """
             }
         }
@@ -51,7 +48,7 @@ pipeline {
                             ${tool('SonarScanner')}/bin/sonar-scanner \
                                 -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
                                 -Dsonar.sources=restmon \
-                                -Dsonar.python.coverage.reportPaths=coverage/coverage.xml \
+                                -Dsonar.python.coverage.reportPaths=сoverage.xml \
                                 -Dsonar.scanner.skipJreProvisioning=true \
                                 -Dsonar.scanner.caches.directory=.sonar/cache
                         """
