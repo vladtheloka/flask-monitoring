@@ -12,8 +12,9 @@ if [ ! -f "$COMPOSE_DIR/$COMPOSE_FILE" ]; then
 fi
 
 echo "[+] Starting test compose environment..."
-docker compose -f "$COMPOSE_FILE" -p restmon_test up -d --build \
-    --project-directory "$COMPOSE_DIR"
+cd "$COMPOSE_DIR"
+docker compose -f "$COMPOSE_FILE" -p restmon_test up -d --build
+cd ..
 
 echo "[+] Waiting for service to be ready..."
 for i in {1..30}; do
@@ -32,7 +33,8 @@ echo "[+] Running integration tests..."
 pytest -v tests_integration
 
 echo "[+] Stopping docker compose..."
-docker compose -f "$COMPOSE_FILE" -p restmon_test down -v \
-    --project-directory "$COMPOSE_DIR"
+cd "$COMPOSE_DIR"
+docker compose -f "$COMPOSE_FILE" -p restmon_test down -v
+cd ..
 
 echo "[✓] Integration tests finished."
