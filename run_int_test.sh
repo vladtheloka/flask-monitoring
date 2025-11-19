@@ -3,7 +3,7 @@ set -e
 
 echo "🚀 Starting integration tests..."
 
-docker compose up -d --build tests_integration/docker-compose.test.yml
+docker compose -f tests_integration/docker-compose.test.yml up -d --build
 
 echo "⏳ Waiting for API to start..."
 
@@ -22,5 +22,5 @@ echo "✅ API is UP — running integration tests"
 
 pytest -v tests_integration
 
-docker compose down tests_integration/docker-compose.test.yml
+docker compose -f tests_integration/docker-compose.test.yml down
 echo "✅ Integration tests completed"
