@@ -7,8 +7,7 @@ import pytest
 @pytest.fixture(scope="session", autouse=True)
 def run_compose():
     # поднять compose
-    subprocess.run(["docker", " compose", "up", "-d", "--build"], 
-    cwd="tests_integration")
+    subprocess.run(["docker", " compose", "up", "-d", "--build"], cwd="tests_integration")
 
     # ждать готовности сервиса
     url = "http://localhost:5001/platform"
@@ -26,5 +25,4 @@ def run_compose():
     yield
 
     # остановить compose
-    subprocess.run(["docker", "compose", "down", "-v"], 
-    cwd="tests_integration")
+    subprocess.run(["docker", "compose", "down", "-v"], cwd="tests_integration")
