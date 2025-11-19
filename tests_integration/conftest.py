@@ -4,7 +4,7 @@ import requests
 import pytest
 
 
-COMPOSE_FILE = "docker-compose.test.yml"
+COMPOSE_FILE = "tests_integration/docker-compose.test.yml"
 SERVICE_URL = "http://localhost:5001/platform"
 
 

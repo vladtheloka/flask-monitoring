@@ -1,26 +1,38 @@
 #!/bin/bash
 set -e
 
-echo "🚀 Starting integration tests..."
+COMPOSE_FILE="docker-compose.test.yml"
+COMPOSE_DIR="tests_integration"
+SERVICE_URL="http://localhost:5001/platform"
 
-docker compose -f tests_integration/docker-compose.test.yml up -d --build
+echo "[+] Checking compose file..."
+if [ ! -f "$COMPOSE_DIR/$COMPOSE_FILE" ]; then
+    echo "ERROR: $COMPOSE_DIR/$COMPOSE_FILE not found!"
+    exit 1
+fi
 
-echo "⏳ Waiting for API to start..."
+echo "[+] Starting test compose environment..."
+docker compose -f "$COMPOSE_FILE" -p restmon_test up -d --build \
+    --project-directory "$COMPOSE_DIR"
 
-# Wait for service to respond
-RETRIES=20
-until curl -s http://localhost:5001/ >/dev/null 2>&1; do
-    ((RETRIES--))
-    if [ $RETRIES -le 0 ]; then
-        echo "❌ ERROR: Service did not start!"
-        exit 1
+echo "[+] Waiting for service to be ready..."
+for i in {1..30}; do
+    if curl -s "$SERVICE_URL" > /dev/null; then
+        echo "[+] Service is up!"
+        break
     fi
     sleep 1
+    if [ $i -eq 30 ]; then
+        echo "ERROR: Service did not start!"
+        exit 1
+    fi
 done
 
-echo "✅ API is UP — running integration tests"
-
+echo "[+] Running integration tests..."
 pytest -v tests_integration
 
-docker compose -f tests_integration/docker-compose.test.yml down
-echo "✅ Integration tests completed"
+echo "[+] Stopping docker compose..."
+docker compose -f "$COMPOSE_FILE" -p restmon_test down -v \
+    --project-directory "$COMPOSE_DIR"
+
+echo "[✓] Integration tests finished."
