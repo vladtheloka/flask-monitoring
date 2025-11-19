@@ -2,19 +2,20 @@ import subprocess
 import time
 import requests
 import pytest
-
+import os
 
 @pytest.fixture(scope="session", autouse=True)
 def run_compose():
-    # поднять compose
+    compose_dir = os.path.join(os.getcwd(), "tests_integration")
+
     subprocess.run(
-        ["docker", "compose", "-f", "docker-compose.test.yml", "up", "-d", "--build"],
-        cwd="tests_integration",
+        ["docker", "compose", "up", "-d", "--build"],
+        cwd=compose_dir,
         check=True
     )
 
-    # ждать готовности сервиса
     url = "http://localhost:5001/platform"
+
     for _ in range(30):
         try:
             r = requests.get(url, timeout=1)
@@ -28,9 +29,7 @@ def run_compose():
 
     yield
 
-    # остановить compose
     subprocess.run(
-        ["docker", "compose", "-f", "docker-compose.test.yml", "down", "-v"],
-        cwd="tests_integration",
-        check=True
+        ["docker", "compose", "down", "-v"],
+        cwd=compose_dir
     )

@@ -42,7 +42,11 @@ pipeline {
 
         stage('Integration Tests') {
             steps {
-                sh './run_int_test.sh'
+                sh """
+                    docker run --rm \
+                    ${IMAGE_NAME}:${TAG} \
+                    python3 -m pytest -v integration_tests
+                """
             }
         }
 

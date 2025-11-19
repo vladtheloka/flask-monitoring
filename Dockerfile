@@ -7,6 +7,19 @@ ENV PIP_CACHE_DIR=${PIP_CACHE_DIR}
 
 WORKDIR /app
 
+# Устанавливаем docker-compose plugin (официальный)
+RUN apt-get update && apt-get install -y \
+    curl \
+    docker.io \
+    && rm -rf /var/lib/apt/lists/*
+
+# docker compose plugin (официальный способ)
+RUN mkdir -p /usr/libexec/docker/cli-plugins && \
+    curl -SL \
+        https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-linux-x86_64 \
+        -o /usr/libexec/docker/cli-plugins/docker-compose && \
+    chmod +x /usr/libexec/docker/cli-plugins/docker-compose
+
 # Копируем только requirements для кэширования зависимостей
 COPY requirements.txt .
 
