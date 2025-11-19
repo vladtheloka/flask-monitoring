@@ -38,5 +38,6 @@ COPY tests ./tests/
 COPY tests_integration ./tests_integration/
 COPY pytest.ini .
 COPY run_int_test.sh .
+COPY Dockerfile .
 
 CMD ["/bin/bash"]
