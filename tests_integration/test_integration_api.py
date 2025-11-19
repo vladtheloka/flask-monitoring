@@ -5,7 +5,7 @@ import requests
 BASE_URL = "http://localhost:5001"
 
 
-def wait_for_service(timeout=20):
+def wait_for_service(timeout=20): # type: ignore
     """Ждём пока контейнер поднимется"""
     start = time.time()
     while time.time() - start < timeout:

@@ -1,48 +1,36 @@
-import time
 import subprocess
+import time
 import requests
 import pytest
 
 
-COMPOSE_FILE = "docker-compose.test.yml"
-SERVICE_URL = "http://localhost:5001/platform"
-
-
-def wait_for_service(url: str, timeout: int = 30):
-    """Ждём пока сервис поднимется."""
-    for _ in range(timeout):
-        try:
-            r = requests.get(url, timeout=1)
-            if r.status_code == 200:
-                return
-        except Exception:
-            pass
-        time.sleep(1)
-    raise RuntimeError("Service did not start!")
-
-
 @pytest.fixture(scope="session", autouse=True)
 def run_compose():
-    """Поднимает docker-compose перед тестами, затем останавливает."""
-
-    # up
+    # поднять compose
     subprocess.run(
-        ["docker", "compose",
-         "-f", COMPOSE_FILE,
-         "up", "-d", "--build"],
+        ["docker", "compose", "-f", "docker-compose.test.yml", "up", "-d", "--build"],
         cwd="tests_integration",
         check=True
     )
 
-    wait_for_service(SERVICE_URL)
+    # ждать готовности сервиса
+    url = "http://localhost:5001/platform"
+    for _ in range(30):
+        try:
+            r = requests.get(url, timeout=1)
+            if r.status_code == 200:
+                break
+        except Exception:
+            pass
+        time.sleep(1)
+    else:
+        raise RuntimeError("Service did not start!")
 
     yield
 
-    # down
+    # остановить compose
     subprocess.run(
-        ["docker", "compose",
-         "-f", COMPOSE_FILE,
-         "down", "-v"],
+        ["docker", "compose", "-f", "docker-compose.test.yml", "down", "-v"],
         cwd="tests_integration",
         check=True
     )
