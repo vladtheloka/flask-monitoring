@@ -1,7 +1,5 @@
 import pytest
-from restmon.api import app as flask_app
 
-@pytest.fixture
-def client():
-    with flask_app.test_client() as client:
-        yield client
+@pytest.fixture(scope="session")
+def base_url():
+    return "http://localhost:5001"

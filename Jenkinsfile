@@ -44,7 +44,6 @@ pipeline {
             steps {
                 sh """
                     docker run --rm \
-                    -v /var/run/docker.sock:/var/run/docker.sock \
                     ${IMAGE_NAME}:${TAG} \
                     ./run_int_test.sh
                 """

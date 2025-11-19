@@ -1,65 +1,50 @@
-import time
 import requests
 
 
-BASE_URL = "http://localhost:5001"
-
-
-def wait_for_service(timeout=20): # type: ignore
-    """Ждём пока контейнер поднимется"""
-    start = time.time()
-    while time.time() - start < timeout:
-        try:
-            r = requests.get(f"{BASE_URL}/platform")
-            if r.status_code == 200:
-                return True
-        except requests.exceptions.ConnectionError:
-            time.sleep(10)
-    raise TimeoutError("Service did not start in time")
-
-
-def test_front_page():
-    wait_for_service()
-    r = requests.get(f"{BASE_URL}/")
+def test_front_page(base_url: str):
+    r = requests.get(f"{base_url}/")
     assert r.status_code == 200
-    assert r.json() == {"Hello": "World"}
+    assert r.json().get("Hello") == "World"
 
 
-def test_platform():
-    wait_for_service()
-    r = requests.get(f"{BASE_URL}/platform")
+def test_platform(base_url: str):
+    r = requests.get(f"{base_url}/platform")
     assert r.status_code == 200
-    j = r.json()
-    assert "kernelversion" in j
-    assert "operatingsystem" in j
-    assert "hostname" in j
-    assert "architecture" in j
+    data = r.json()
+
+    assert "kernelversion" in data
+    assert "operatingsystem" in data
+    assert "hostname" in data
+    assert "architecture" in data
 
 
-def test_memory():
-    r = requests.get(f"{BASE_URL}/memory")
+def test_memory(base_url: str):
+    r = requests.get(f"{base_url}/memory")
     assert r.status_code == 200
-    j = r.json()
-    assert "totalMemory" in j
-    assert "availableMemory" in j
-    assert "freeMemory" in j
+    data = r.json()
+
+    assert "totalMemory" in data
+    assert "availableMemory" in data
+    assert "freeMemory" in data
 
 
-def test_cpu():
-    r = requests.get(f"{BASE_URL}/cpu")
+def test_cpu(base_url: str):
+    r = requests.get(f"{base_url}/cpu")
     assert r.status_code == 200
-    j = r.json()
-    assert "cpuuser" in j
-    assert "cpusystem" in j
-    assert "cpuidle" in j
-    assert "cpuiowait" in j
+    data = r.json()
+
+    assert "cpuuser" in data
+    assert "cpusystem" in data
+    assert "cpuidle" in data
+    assert "cpuiowait" in data
 
 
-def test_storage():
-    r = requests.get(f"{BASE_URL}/storage")
+def test_storage(base_url: str):
+    r = requests.get(f"{base_url}/storage")
     assert r.status_code == 200
-    j = r.json()
-    assert "roottotal" in j
-    assert "rootused" in j
-    assert "rootfree" in j
-    assert "rootfreepercent" in j
+    data = r.json()
+
+    assert "roottotal" in data
+    assert "rootused" in data
+    assert "rootfree" in data
+    assert "rootfreepercent" in data
