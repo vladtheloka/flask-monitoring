@@ -4,7 +4,7 @@ set -e
 echo "[+] Running integration tests..."
 
 # Поднять контейнеры через docker compose
-docker compose -f tests_integration/docker-compose.test.yml up -d --build
+docker compose --file tests_integration/docker-compose.test.yml up -d --build
 
 # Ждём готовности сервиса
 URL="http://localhost:5001/platform"
@@ -20,5 +20,5 @@ done
 python3 -m pytest -v --cov=restmon --cov-report=xml:coverage/coverage.xml tests_integration
 
 # Остановить контейнеры
-docker compose -f tests_integration/docker-compose.test.yml down -v
+docker compose --file tests_integration/docker-compose.test.yml down -v
 echo "[+] Integration tests completed."
