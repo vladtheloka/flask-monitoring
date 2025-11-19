@@ -14,7 +14,7 @@ def wait_for_service(timeout=20): # type: ignore
             if r.status_code == 200:
                 return True
         except requests.exceptions.ConnectionError:
-            time.sleep(1)
+            time.sleep(10)
     raise TimeoutError("Service did not start in time")
 
 
