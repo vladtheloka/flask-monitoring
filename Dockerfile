@@ -20,4 +20,9 @@ COPY tests ./tests/
 COPY tests_integration ./tests_integration/
 COPY pytest.ini ./
 
-CMD ["python3", "-m", "restmon"]
+# Добавляем docker и curl для интеграционных тестов
+RUN apt-get update && apt-get install -y \
+    docker.io curl && \
+    rm -rf /var/lib/apt/lists/*
+
+CMD ["/bin/bash"]
