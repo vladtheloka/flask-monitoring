@@ -45,7 +45,7 @@ pipeline {
                 sh """
                     docker run --rm \
                     ${IMAGE_NAME}:${TAG} \
-                    python3 -m pytest -v integration_tests
+                    python3 -m pytest -v tests_integration
                 """
             }
         }
