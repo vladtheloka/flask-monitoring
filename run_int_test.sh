@@ -1,17 +1,9 @@
 #!/bin/bash
 set -e
 
-# autodetect docker compose
-if command -v docker-compose &> /dev/null; then
-    DC="docker-compose"
-elif docker compose version &> /dev/null; then
-    DC="docker compose"
-else
-    echo "❌ docker-compose NOT found"
-    exit 1
-fi
+echo "🚀 Starting integration tests..."
 
-$DC -f tests_integration/docker-compose.test.yml up -d --build
+docker compose -f tests_integration/docker-compose.test.yml up -d --build
 
 echo "⏳ Waiting for API to start..."
 
@@ -30,5 +22,5 @@ echo "✅ API is UP — running integration tests"
 
 pytest -v tests_integration
 
-$DC -f tests_integration/docker-compose.test.yml down
+docker compose -f tests_integration/docker-compose.test.yml down
 echo "✅ Integration tests completed"
