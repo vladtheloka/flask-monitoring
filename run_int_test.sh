@@ -17,7 +17,7 @@ for i in {1..30}; do
 done
 
 # Запуск pytest с coverage
-pytest -v --cov=restmon --cov-report=xml:coverage/coverage.xml tests_integration
+python3 -m pytest -v --cov=restmon --cov-report=xml:coverage/coverage.xml tests_integration
 
 # Остановить контейнеры
 docker compose -f tests_integration/docker-compose.test.yml down -v
