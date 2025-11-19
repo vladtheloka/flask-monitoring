@@ -35,7 +35,7 @@ pipeline {
                 sh """
                     docker run --rm \
                     ${IMAGE_NAME}:${TAG} \
-                    python3 -m pytest -v --cov=restmon --cov-report=xml:coverage.xml tests
+                    python3 -m pytest -v --cov=restmon --cov-report=xml:coverage/coverage.xml tests
                 """
             }
         }
@@ -53,7 +53,7 @@ pipeline {
                             ${tool('SonarScanner')}/bin/sonar-scanner \
                                 -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
                                 -Dsonar.sources=restmon \
-                                -Dsonar.python.coverage.reportPaths=сoverage.xml \
+                                -Dsonar.python.coverage.reportPaths=coverage/сoverage.xml \
                                 -Dsonar.scanner.skipJreProvisioning=true \
                                 -Dsonar.scanner.caches.directory=.sonar/cache
                         """
