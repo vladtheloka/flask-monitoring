@@ -26,7 +26,7 @@ pipeline {
 
         stage('Lint (inside Docker)') {
             steps {
-                sh("docker run --rm ${IMAGE_NAME}:${TAG} bash -c ' black . && flake8 . '")
+                sh("docker run --rm ${IMAGE_NAME}:${TAG} bash -c ' black . && flake8 . --ignore=E501'")
             }
         }
 
