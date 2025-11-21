@@ -21,4 +21,4 @@ COPY tests_integration ./tests_integration/
 COPY pytest.ini .
 COPY run_int_test.sh .
 
-CMD ["/bin/bash"]
+CMD ["python3", "restmon/__main__.py"]
