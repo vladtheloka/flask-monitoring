@@ -1,41 +1,36 @@
-import pytest
-import requests
-import time
 import subprocess
+import time
+import requests
+import pytest
+import os
 
-@pytest.fixture(scope="session")
-def base_url():
-    """Запускаем контейнер с приложением и возвращаем base_url для тестов."""
-    image_name = "restmon:latest"
-    container_name = "restmon_test"
-    port = 5000
-
-    # Запуск контейнера в фоне с пробросом порта
+@pytest.fixture(scope="session", autouse=True)
+def run_container():
+    # Порт, на котором сервис будет доступен снаружи
+    port = os.getenv("PORT", "5000")
+    base_url = f"http://localhost:{port}"
+    
+    # Запускаем контейнер с нужным портом
     subprocess.run([
-        "docker", "run", "-d",
-        "--name", container_name,
-        "-p", f"{port}:5000",
-        image_name
+        "docker", "run", "--rm", "-d",
+        "-p", f"{port}:{port}",
+        "--name", "restmon_test",
+        "restmon:latest"
     ], check=True)
 
-    url = f"http://localhost:{port}"
-
-    # Ждём готовности сервиса
+    # Ждём, пока сервис станет доступен
     for _ in range(30):
         try:
-            r = requests.get(f"{url}/platform", timeout=1)
+            r = requests.get(f"{base_url}/platform", timeout=1)
             if r.status_code == 200:
                 break
         except Exception:
             pass
         time.sleep(1)
     else:
-        # если не поднялся
-        subprocess.run(["docker", "logs", container_name])
-        subprocess.run(["docker", "rm", "-f", container_name])
         raise RuntimeError("Service did not start!")
 
-    yield url  # base_url для тестов
+    yield base_url  # передаём тестам URL
 
-    # После тестов контейнер останавливаем и удаляем
-    subprocess.run(["docker", "rm", "-f", container_name])
+    # Останавливаем контейнер
+    subprocess.run(["docker", "stop", "restmon_test"], check=True)
