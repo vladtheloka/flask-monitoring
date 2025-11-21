@@ -1,13 +1,15 @@
 import requests
 
 
-def test_front_page(base_url: str):
+def test_front_page(start_app_container: str):
+    base_url = start_app_container
     r = requests.get(f"{base_url}/")
     assert r.status_code == 200
     assert r.json().get("Hello") == "World"
 
 
-def test_platform(base_url: str):
+def test_platform(start_app_container: str):
+    base_url = start_app_container
     r = requests.get(f"{base_url}/platform")
     assert r.status_code == 200
     data = r.json()
@@ -18,7 +20,8 @@ def test_platform(base_url: str):
     assert "architecture" in data
 
 
-def test_memory(base_url: str):
+def test_memory(start_app_container: str):
+    base_url = start_app_container
     r = requests.get(f"{base_url}/memory")
     assert r.status_code == 200
     data = r.json()
@@ -28,7 +31,8 @@ def test_memory(base_url: str):
     assert "freeMemory" in data
 
 
-def test_cpu(base_url: str):
+def test_cpu(start_app_container: str):
+    base_url = start_app_container
     r = requests.get(f"{base_url}/cpu")
     assert r.status_code == 200
     data = r.json()
@@ -39,7 +43,8 @@ def test_cpu(base_url: str):
     assert "cpuiowait" in data
 
 
-def test_storage(base_url: str):
+def test_storage(start_app_container: str):
+    base_url = start_app_container
     r = requests.get(f"{base_url}/storage")
     assert r.status_code == 200
     data = r.json()

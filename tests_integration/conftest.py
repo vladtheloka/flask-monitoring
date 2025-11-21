@@ -1,27 +1,37 @@
 import subprocess
 import time
-import requests
 import pytest
-import os
+import requests
+
+APP_CONTAINER_NAME = "restmon_test"
+APP_IMAGE = "restmon:latest"
+NETWORK_NAME = "restmon_test_net"
+APP_PORT = 5000
+BASE_URL = f"http://{APP_CONTAINER_NAME}:{APP_PORT}"
+
 
 @pytest.fixture(scope="session", autouse=True)
-def run_container():
-    # Порт, на котором сервис будет доступен снаружи
-    port = os.getenv("PORT", "5000")
-    base_url = f"http://localhost:{port}"
-    
-    # Запускаем контейнер с нужным портом
+def start_app_container():
+    # создаем сеть, если не существует
+    subprocess.run(
+        ["docker", "network", "create", NETWORK_NAME],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+
+    # запускаем контейнер приложения
     subprocess.run([
-        "docker", "run", "--rm", "-d",
-        "-p", f"{port}:{port}",
-        "--name", "restmon_test",
-        "restmon:latest"
+        "docker", "run", "-d",
+        "--name", APP_CONTAINER_NAME,
+        "--network", NETWORK_NAME,
+        "-p", f"{APP_PORT}:{APP_PORT}",
+        APP_IMAGE
     ], check=True)
 
-    # Ждём, пока сервис станет доступен
+    # ждем, пока сервис поднимется
     for _ in range(30):
         try:
-            r = requests.get(f"{base_url}/platform", timeout=1)
+            r = requests.get(f"{BASE_URL}/platform", timeout=1)
             if r.status_code == 200:
                 break
         except Exception:
@@ -30,7 +40,8 @@ def run_container():
     else:
         raise RuntimeError("Service did not start!")
 
-    yield base_url  # передаём тестам URL
+    yield BASE_URL
 
-    # Останавливаем контейнер
-    subprocess.run(["docker", "stop", "restmon_test"], check=True)
+    # остановка и удаление контейнера
+    subprocess.run(["docker", "rm", "-f", APP_CONTAINER_NAME])
+    # оставим сеть, может быть использована повторно
