@@ -16,7 +16,6 @@ pipeline {
 
     stages {
         stage('Build Docker image') {
-            agent { label 'master1' }
             steps {
                 sh """
                      export DOCKER_BUILDKIT=1
@@ -26,14 +25,12 @@ pipeline {
         }
 
         stage('Lint (inside Docker)') {
-            agent { label 'master2' }
             steps {
                 sh("docker run --rm ${IMAGE_NAME}:${TAG} bash -c ' black . && flake8 . --ignore=E501'")
             }
         }
 
         stage('Run Unit Tests') {
-            agent { label 'master3' }
             steps {
                 sh """
                     docker run --rm \
@@ -44,7 +41,6 @@ pipeline {
         }
 
         stage('Integration Tests') {
-            agent { label 'master4' }
             steps {
                 sh """
                     docker run --rm \
@@ -55,7 +51,6 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
-            agent { label 'master5' }
             steps {
                 withSonarQubeEnv('SonarQube') {
                         sh """
