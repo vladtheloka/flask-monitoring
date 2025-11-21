@@ -2,7 +2,9 @@ from subprocess import Popen, PIPE
 from flask_restful import Resource
 
 
-def run_cmd(cmd):
+from typing import List
+
+def run_cmd(cmd: List[str]) -> str:
     return (
         Popen(cmd, stdout=PIPE)
         .communicate()[0]
