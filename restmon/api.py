@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 
-from restmon.resources import (
+from .resources import (
     getMemory,
     getCPU,
     getCPUPercent,
@@ -9,7 +9,7 @@ from restmon.resources import (
     frontPage,
 )
 
-from restmon.os_platform import getPlatform
+from .os_platform import getPlatform
 
 app = Flask(__name__)
 api = Api(app)
