@@ -8,7 +8,7 @@ def base_url():
     """Запускаем контейнер с приложением и возвращаем base_url для тестов."""
     image_name = "restmon:latest"
     container_name = "restmon_test"
-    port = 5001
+    port = 5000
 
     # Запуск контейнера в фоне с пробросом порта
     subprocess.run([
