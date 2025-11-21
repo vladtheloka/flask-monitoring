@@ -15,9 +15,10 @@ app = Flask(__name__)
 api = Api(app)
 
 # Routes
-api.add_resource(frontPage, "/")
-api.add_resource(getMemory, "/memory")
-api.add_resource(getCPU, "/cpu")
-api.add_resource(getCPUPercent, "/cpupercent")
-api.add_resource(getStorage, "/storage")
-api.add_resource(getPlatform, "/platform")
+# register function-based view handlers directly to avoid passing unknown types to flask-restful's typing
+app.add_url_rule("/", "frontPage", frontPage)
+app.add_url_rule("/memory", "getMemory", getMemory)
+app.add_url_rule("/cpu", "getCPU", getCPU)
+app.add_url_rule("/cpupercent", "getCPUPercent", getCPUPercent)
+app.add_url_rule("/storage", "getStorage", getStorage)
+app.add_url_rule("/platform", "getPlatform", getPlatform)

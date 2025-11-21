@@ -3,7 +3,7 @@ import psutil
 
 
 class getMemory(Resource):
-    def get(self):
+    def get(self) -> dict[str, int]:
         mem = psutil.virtual_memory()
         return {
             'totalMemory': mem.total >> 20,
@@ -13,7 +13,7 @@ class getMemory(Resource):
 
 
 class getCPU(Resource):
-    def get(self):
+    def get(self) -> dict[str, float]:
         cpu = psutil.cpu_times()
         return {
             'cpuuser': cpu.user,
@@ -24,7 +24,7 @@ class getCPU(Resource):
 
 
 class getCPUPercent(Resource):
-    def get(self):
+    def get(self) -> dict[str, float]:
         cpu = psutil.cpu_times_percent(interval=1, percpu=False)
         return {
             'cpuuser': cpu.user,
@@ -35,7 +35,7 @@ class getCPUPercent(Resource):
 
 
 class getStorage(Resource):
-    def get(self):
+    def get(self) -> dict[str, int | float]:
         storage = psutil.disk_usage('/')
         return {
             'roottotal': storage.total >> 20,
