@@ -1,7 +1,7 @@
 #!/usr/bin/groovy
 
 pipeline {
-    agent none
+    agent any
 
     options {
         disableConcurrentBuilds()
@@ -16,7 +16,6 @@ pipeline {
 
     stages {
         stage('Build Docker image') {
-            agent { label 'master' }
             steps {
                 sh """
                      export DOCKER_BUILDKIT=1
@@ -26,14 +25,12 @@ pipeline {
         }
 
         stage('Lint (inside Docker)') {
-            agent { label 'master' }
             steps {
                 sh("docker run --rm ${IMAGE_NAME}:${TAG} bash -c ' black . && flake8 . --ignore=E501'")
             }
         }
 
         stage('Run Unit Tests') {
-            agent { label 'master' }
             steps {
                 sh """
                     docker run --rm \
@@ -44,18 +41,12 @@ pipeline {
         }
 
         stage('Integration Tests') {
-            agent { label 'master' }
             steps {
-                sh """
-                    docker run --rm \
-                    ${IMAGE_NAME}:${TAG} \
-                    ./run_int_test.sh
-                """
+                sh './run_int_test.sh'
             }
         }
 
         stage('SonarQube Analysis') {
-            agent { label 'master' }
             steps {
                 withSonarQubeEnv('SonarQube') {
                         sh """
