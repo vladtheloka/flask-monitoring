@@ -2,5 +2,5 @@
 set -e
 
 echo "[+] Running integration tests..."
-python3 -m pytest -v tests_integration --maxfail=1 --disable-warnings
+python3 -m pytest -v tests_integration
 echo "[+] Integration tests passed!"

@@ -1,28 +1,16 @@
-from subprocess import Popen, PIPE
-from flask_restful import Resource
+from __future__ import annotations
+import platform
+from typing import Literal
 
 
-from typing import List
-
-def run_cmd(cmd: List[str]) -> str:
-    return (
-        Popen(cmd, stdout=PIPE)
-        .communicate()[0]
-        .decode("utf-8")
-        .strip()
-    )
+Platform = Literal["Windows", "Linux", "Darwin"]
 
 
-class getPlatform(Resource):
-    def get(self):
-        kernel = run_cmd(["uname", "-r"])
-        hostname = run_cmd(["uname", "-n"])
-        architecture = run_cmd(["uname", "-m"])
-        os_name = run_cmd(["uname", "-o"])
-
-        return {
-            "kernelversion": kernel,
-            "operatingsystem": os_name,
-            "hostname": hostname,
-            "architecture": architecture,
-        }
+def get_platform() -> Platform:
+    """
+    Typed wrapper around platform.system().
+    """
+    system = platform.system()
+    if system not in ("Windows", "Linux", "Darwin"):
+        return "Linux"  # fallback
+    return system

@@ -1,9 +1,11 @@
+from __future__ import annotations
+from typing import Dict, Union
 from flask_restful import Resource
 import psutil
 
 
-class getMemory(Resource):
-    def get(self) -> dict[str, int]:
+class GetMemory(Resource):
+    def get(self) -> Dict[str, int]:
         mem = psutil.virtual_memory()
         return {
             'totalMemory': mem.total >> 20,
@@ -12,8 +14,8 @@ class getMemory(Resource):
         }
 
 
-class getCPU(Resource):
-    def get(self) -> dict[str, float]:
+class GetCPU(Resource):
+    def get(self) -> Dict[str, float]:
         cpu = psutil.cpu_times()
         return {
             'cpuuser': cpu.user,
@@ -23,8 +25,8 @@ class getCPU(Resource):
         }
 
 
-class getCPUPercent(Resource):
-    def get(self) -> dict[str, float]:
+class GetCPUPercent(Resource):
+    def get(self) -> Dict[str, float]:
         cpu = psutil.cpu_times_percent(interval=1, percpu=False)
         return {
             'cpuuser': cpu.user,
@@ -34,8 +36,8 @@ class getCPUPercent(Resource):
         }
 
 
-class getStorage(Resource):
-    def get(self) -> dict[str, int | float]:
+class GetStorage(Resource):
+    def get(self) -> Dict[str, Union[int, float]]:
         storage = psutil.disk_usage('/')
         return {
             'roottotal': storage.total >> 20,
@@ -45,6 +47,6 @@ class getStorage(Resource):
         }
 
 
-class frontPage(Resource):
-    def get(self):
+class FrontPage(Resource):
+    def get(self) -> Dict[str, str]:
         return {'Hello': 'World'}

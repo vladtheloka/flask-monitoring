@@ -1,23 +1,26 @@
+from __future__ import annotations
+
 from flask import Flask
 from flask_restful import Api
 
-from .resources import (
-    getMemory,
-    getCPU,
-    getCPUPercent,
-    getStorage,
-    frontPage,
-)
-
-from .os_platform import getPlatform
-
-app = Flask(__name__)
-api = Api(app)
+from restmon.resources import FrontPage
 
 
-api.add_resource(frontPage, "/")
-api.add_resource(getMemory, "/memory")
-api.add_resource(getCPU, "/cpu")
-api.add_resource(getCPUPercent, "/cpupercent")
-api.add_resource(getStorage, "/storage")
-api.add_resource(getPlatform, "/platform")
+def create_app() -> Flask:
+    """
+    Creates and configures Flask application.
+    """
+    app = Flask(__name__)
+    api = Api(app)
+
+    register_resources(api)
+
+    return app
+
+
+def register_resources(api: Api) -> None:
+    """
+    Register all API resources here.
+    Pylance understands types thanks to Protocol.
+    """
+    api.add_resource(FrontPage, "/")  # type: ignore[arg-type]
