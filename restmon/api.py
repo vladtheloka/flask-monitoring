@@ -4,6 +4,7 @@ from flask import Flask
 from flask_restful import Api
 
 from restmon.resources import FrontPage, GetMemory, GetCPU, GetCPUPercent, GetStorage
+from os_platform import platform
 
 
 def create_app() -> Flask:
@@ -28,3 +29,4 @@ def register_resources(api: Api) -> None:
     api.add_resource(GetCPU, "/cpu") # type: ignore[arg-type]
     api.add_resource(GetCPUPercent, "/cpu/percent") # type: ignore[arg-type]
     api.add_resource(GetStorage, "/storage") # type: ignore[arg-type]
+    api.add_resource(platform.system, "/platform") # type: ignore[arg-type]
