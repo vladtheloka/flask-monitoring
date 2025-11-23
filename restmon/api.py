@@ -4,7 +4,7 @@ from flask import Flask
 from flask_restful import Api
 
 from restmon.resources import FrontPage, GetMemory, GetCPU, GetCPUPercent, GetStorage
-from os_platform import platform
+from restmon.os_platform import platform
 
 
 def create_app() -> Flask:
