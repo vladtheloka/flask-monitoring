@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_restful import Api, Resource
-from flask_wtf.csrf import CsrfProtect
+from flask_wtf.csrf import CSRFProtect
 from typing import Any, Dict
 from restmon.resources import SystemResources
 

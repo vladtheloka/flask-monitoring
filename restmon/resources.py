@@ -2,9 +2,11 @@ import os
 import psutil
 import platform  # Import the platform module
 from flask import Flask
+from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__)
-
+csrf = CSRFProtect()
+csrf.init_app(app)
 
 class SystemResources:
 	@staticmethod
