@@ -55,7 +55,7 @@ pipeline {
                                 -Dsonar.sources=restmon \
                                 -Dsonar.python.coverage.reportPaths=coverage/coverage.xml \
                                 -Dsonar.python.version=3.12 \
-                                -Dsonar.tests=tests,tests_integration
+                                -Dsonar.tests=tests,tests_integration \d
                                 -Dsonar.scanner.skipJreProvisioning=true \
                                 -Dsonar.scanner.caches.directory=.sonar/cache
                         """
