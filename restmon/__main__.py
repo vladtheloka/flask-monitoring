@@ -1,4 +1,4 @@
-from api import create_app
+from restmon.api import create_app
 import os
 
 if __name__ == "__main__":
