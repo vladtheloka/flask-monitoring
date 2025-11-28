@@ -2,3 +2,4 @@ myvenv
 .coverage
 tests_integration/__pycache__
 .vscode
+restmon/__pycache__
