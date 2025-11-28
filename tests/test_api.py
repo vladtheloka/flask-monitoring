@@ -1,6 +1,5 @@
 import restmon.api as api
 import pytest
-from flask import Flask
 from flask.testing import FlaskClient
 
 class FakeResources:
@@ -27,18 +26,6 @@ class FakeResources:
     @staticmethod
     def get_system_uptime():
         return 3600
-
-
-@pytest.fixture
-def app() -> Flask:
-    app = Flask(__name__)
-    app.config['TESTING'] = True
-    return app
-
-
-@pytest.fixture
-def client(app: Flask) -> FlaskClient:
-    return app.test_client()
 
 def test_system_info_get_returns_expected_json(monkeypatch: pytest.MonkeyPatch, client: FlaskClient):
     monkeypatch.setattr(api, "SystemResources", FakeResources)

@@ -1,13 +1,6 @@
 #!/bin/bash
 set -e
 
-echo "[Building docker image."
-
-# Build the Docker image
-docker build -t restmon:latest .
-
-echo "[✔] Docker image built successfully!"
-
 echo "[Starting container for integration tests...]"
 # Run the container in the background
 docker run -d --name restmon_test restmon:latest
