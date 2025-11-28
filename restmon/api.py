@@ -1,32 +1,15 @@
-from __future__ import annotations
+from flask import Flask, jsonify
+from restmon.resources import SystemResources
 
-from flask import Flask
-from flask_restful import Api
+app = Flask(__name__)
 
-from restmon.resources import FrontPage, GetMemory, GetCPU, GetCPUPercent, GetStorage
-from restmon.os_platform import platform
-
-
-def create_app() -> Flask:
-    """
-    Creates and configures Flask application.
-    """
-    app = Flask(__name__)
-    api = Api(app)
-
-    register_resources(api)
-
-    return app
-
-
-def register_resources(api: Api) -> None:
-    """
-    Register all API resources here.
-    Pylance understands types thanks to Protocol.
-    """
-    api.add_resource(FrontPage, "/") # type: ignore[arg-type]
-    api.add_resource(GetMemory, "/memory") # type: ignore[arg-type]
-    api.add_resource(GetCPU, "/cpu") # type: ignore[arg-type]
-    api.add_resource(GetCPUPercent, "/cpu/percent") # type: ignore[arg-type]
-    api.add_resource(GetStorage, "/storage") # type: ignore[arg-type]
-    api.add_resource(platform.system, "/platform") # type: ignore[arg-type]
+@app.get("/system_info")
+def system_info():
+	return jsonify({
+		"os_details": SystemResources.get_os_details(),
+		"cpu_usage": SystemResources.get_cpu_usage(),
+		"memory_usage": SystemResources.get_memory_usage(),
+		"storage_usage": SystemResources.get_storage_usage(),
+		"network_usage": SystemResources.get_network_usage(),
+        "system_uptime": SystemResources.get_system_uptime(),
+	})

@@ -1,52 +1,60 @@
-from __future__ import annotations
-from typing import Dict, Union
-from flask_restful import Resource
+import os
 import psutil
+import platform  # Import the platform module
+from flask import Flask
+
+app = Flask(__name__)
 
 
-class GetMemory(Resource):
-    def get(self) -> Dict[str, int]:
-        mem = psutil.virtual_memory()
-        return {
-            'totalMemory': mem.total >> 20,
-            'availableMemory': mem.available >> 20,
-            'freeMemory': mem.free >> 20,
-        }
+class SystemResources:
+	@staticmethod
+	def get_os_details() -> dict[str, str]:
+		return {
+			"os": os.name,
+			"platform": platform.system(),
+			"release": os.uname().release,
+			"version": os.uname().version,
+			"machine": os.uname().machine,
+		}
 
+	@staticmethod
+	def get_cpu_usage():
+		return psutil.cpu_percent(interval=1)
 
-class GetCPU(Resource):
-    def get(self) -> Dict[str, float]:
-        cpu = psutil.cpu_times()
-        return {
-            'cpuuser': cpu.user,
-            'cpusystem': cpu.system,
-            'cpuidle': cpu.idle,
-            'cpuiowait': getattr(cpu, 'iowait', 0),
-        }
+	@staticmethod
+	def get_memory_usage() -> dict[str, int | float]:
+		memory = psutil.virtual_memory()
+		return {
+			"total": memory.total,
+			"available": memory.available,
+			"used": memory.used,
+			"percent": memory.percent,
+		}
 
+	@staticmethod
+	def get_storage_usage() -> dict[str, int | float]:
+		disk = psutil.disk_usage('/')
+		return {
+			"total": disk.total,
+			"used": disk.used,
+			"free": disk.free,
+			"percent": disk.percent,
+		}
+	
+	@staticmethod
+	def get_network_usage() -> dict[str, float]:
+			net_io = psutil.net_io_counters()
+			return {
+				"bytes_sent": net_io.bytes_sent,
+				"bytes_recv": net_io.bytes_recv,
+				"packets_sent": net_io.packets_sent,
+				"packets_recv": net_io.packets_recv,
+			}
 
-class GetCPUPercent(Resource):
-    def get(self) -> Dict[str, float]:
-        cpu = psutil.cpu_times_percent(interval=1, percpu=False)
-        return {
-            'cpuuser': cpu.user,
-            'cpusystem': cpu.system,
-            'cpuidle': cpu.idle,
-            'cpuiowait': getattr(cpu, 'iowait', 0),
-        }
+	@staticmethod
+	def get_system_uptime() -> float:
+			return psutil.boot_time()
 
-
-class GetStorage(Resource):
-    def get(self) -> Dict[str, Union[int, float]]:
-        storage = psutil.disk_usage('/')
-        return {
-            'roottotal': storage.total >> 20,
-            'rootused': storage.used >> 20,
-            'rootfree': storage.free >> 20,
-            'rootfreepercent': storage.percent,
-        }
-
-
-class FrontPage(Resource):
-    def get(self) -> Dict[str, str]:
-        return {'Hello': 'World'}
+	@staticmethod
+	def get_process_count() -> int:
+			return len(psutil.pids())

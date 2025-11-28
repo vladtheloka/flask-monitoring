@@ -1,55 +1,56 @@
+import time
 import requests
 
-
-def test_front_page(start_app_container: str):
-    base_url = start_app_container
-    r = requests.get(f"{base_url}/")
-    assert r.status_code == 200
-    assert r.json().get("Hello") == "World"
+BASE_URL = "http://localhost:5000/system_info"
 
 
-def test_platform(start_app_container: str):
-    base_url = start_app_container
-    r = requests.get(f"{base_url}/platform")
-    assert r.status_code == 200
-    data = r.json()
-
-    assert "kernelversion" in data
-    assert "operatingsystem" in data
-    assert "hostname" in data
-    assert "architecture" in data
-
-
-def test_memory(start_app_container: str):
-    base_url = start_app_container
-    r = requests.get(f"{base_url}/memory")
-    assert r.status_code == 200
-    data = r.json()
-
-    assert "totalMemory" in data
-    assert "availableMemory" in data
-    assert "freeMemory" in data
+def wait_for_service(timeout: int = 30):
+    """Ждём когда API поднимется в контейнере."""
+    for _ in range(timeout):
+        try:
+            r = requests.get(BASE_URL)
+            if r.status_code == 200:
+                return
+        except Exception:
+            pass
+        time.sleep(1)
+    raise RuntimeError("Service did not start within timeout!")
 
 
-def test_cpu(start_app_container: str):
-    base_url = start_app_container
-    r = requests.get(f"{base_url}/cpu")
-    assert r.status_code == 200
-    data = r.json()
+def test_system_info_status_ok():
+    wait_for_service()
 
-    assert "cpuuser" in data
-    assert "cpusystem" in data
-    assert "cpuidle" in data
-    assert "cpuiowait" in data
+    resp = requests.get(BASE_URL)
+    assert resp.status_code == 200
+    assert resp.headers["Content-Type"].startswith("application/json")
 
 
-def test_storage(start_app_container: str):
-    base_url = start_app_container
-    r = requests.get(f"{base_url}/storage")
-    assert r.status_code == 200
-    data = r.json()
+def test_system_info_contains_fields():
+    wait_for_service()
 
-    assert "roottotal" in data
-    assert "rootused" in data
-    assert "rootfree" in data
-    assert "rootfreepercent" in data
+    resp = requests.get(BASE_URL)
+    data = resp.json()
+
+    expected_keys = {
+        "os_details",
+        "cpu_usage",
+        "memory_usage",
+        "storage_usage",
+        "network_usage",
+        "system_uptime",
+    }
+
+    assert set(data.keys()) == expected_keys
+
+
+def test_system_info_values_types():
+    wait_for_service()
+
+    data = requests.get(BASE_URL).json()
+
+    assert isinstance(data["os_details"], dict)
+    assert isinstance(data["cpu_usage"], (float, int))
+    assert isinstance(data["memory_usage"], dict)
+    assert isinstance(data["storage_usage"], dict)
+    assert isinstance(data["network_usage"], dict)
+    assert isinstance(data["system_uptime"], (int, float))
