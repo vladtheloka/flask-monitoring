@@ -8,7 +8,7 @@ from restmon.resources import SystemResources
 def create_app() -> Flask:
     app = Flask(__name__)
     csrf = CSRFProtect()
-    csrf.init_app(app)
+    csrf.init_app(app) # type: ignore
     api = Api(app)
 
     api.add_resource(SystemInfo, "/system_info") # type: ignore
