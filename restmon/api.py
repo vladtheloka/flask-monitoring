@@ -1,11 +1,14 @@
 from flask import Flask
 from flask_restful import Api, Resource
+from flask_wtf.csrf import CsrfProtect
 from typing import Any, Dict
 from restmon.resources import SystemResources
 
 
 def create_app() -> Flask:
     app = Flask(__name__)
+    csrf = CSRFProtect()
+    csrf.init_app(app)
     api = Api(app)
 
     api.add_resource(SystemInfo, "/system_info") # type: ignore
