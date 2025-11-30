@@ -1,3 +1,7 @@
+[run]
+source = restmon
+branch = True
+
 [report]
 omit =
     */__init__.py
