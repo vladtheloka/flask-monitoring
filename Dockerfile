@@ -21,6 +21,7 @@ COPY tests_integration ./tests_integration/
 COPY pytest.ini .
 COPY run_int_test.sh .
 COPY coverage/ ./coverage/
+COPY pyproject.toml .
 
 # Start integration test runner
 CMD ["python3", "-m", "restmon.__main__"]
