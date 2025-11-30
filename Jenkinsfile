@@ -58,7 +58,6 @@ pipeline {
                                 -Dsonar.tests=tests,tests_integration \
                                 -Dsonar.scanner.skipJreProvisioning=true \
                                 -Dsonar.scanner.caches.directory=.sonar/cache
-                                -Dsonar.log.level=DEBUG
                         """
                 }
             }
