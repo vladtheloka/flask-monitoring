@@ -1,5 +1,5 @@
 myvenv
-.coverage
 tests_integration/__pycache__
 .vscode
 restmon/__pycache__
+tests/__pycache__

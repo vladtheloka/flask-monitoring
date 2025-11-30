@@ -53,6 +53,7 @@ pipeline {
                             ${tool('SonarScanner')}/bin/sonar-scanner \
                                 -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
                                 -Dsonar.sources=restmon \
+                                -Dsonasr.tests=tests \
                                 -Dsonar.python.coverage.reportPaths=coverage/coverage.xml \
                                 -Dsonar.python.version=3.12 \
                                 -Dsonar.tests=tests,tests_integration \

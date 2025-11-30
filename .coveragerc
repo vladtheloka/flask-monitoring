@@ -1,0 +1,7 @@
+[report]
+omit =
+    */__init__.py
+    */venv/*
+    */site-packages/*
+    restmon/wsgi.py
+    restmon/main.py
