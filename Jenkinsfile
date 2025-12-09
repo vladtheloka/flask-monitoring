@@ -43,6 +43,7 @@ pipeline {
         stage('Wait for Health') {
             steps {
                 sh '''
+                docker logs restmon_test || true
                 for i in $(seq 1 30); do
                 curl -sSf http://localhost:5000/health/live && break || sleep 1
                 done

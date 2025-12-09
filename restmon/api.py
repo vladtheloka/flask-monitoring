@@ -14,7 +14,7 @@ def create_app() -> Flask:
     api.add_resource(SystemInfo, "/system_info") # type: ignore
     api.add_resource(Live, "/health/live") # type: ignore
     api.add_resource(Ready, "/health/ready") # type: ignore
-
+    
     return app
 
 class SystemInfo(Resource):
