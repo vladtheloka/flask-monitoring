@@ -40,6 +40,16 @@ pipeline {
             }
         }
 
+        stage('Wait for Health') {
+            steps {
+                sh '''
+                for i in $(seq 1 30); do
+                curl -sSf http://localhost:5000/health/live && break || sleep 1
+                done
+                '''
+  }
+}
+
         stage('Integration Tests') {
             steps {
                 sh './run_int_test.sh'

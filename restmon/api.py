@@ -3,7 +3,7 @@ from flask_restful import Api, Resource
 from flask_wtf.csrf import CSRFProtect
 from typing import Any, Dict
 from restmon.resources import SystemResources
-
+from restmon.health import Live, Ready
 
 def create_app() -> Flask:
     app = Flask(__name__)
@@ -12,6 +12,8 @@ def create_app() -> Flask:
     api = Api(app)
 
     api.add_resource(SystemInfo, "/system_info") # type: ignore
+    api.add_resource(Live, "/health/live") # type: ignore
+    api.add_resource(Ready, "/health/ready") # type: ignore
 
     return app
 

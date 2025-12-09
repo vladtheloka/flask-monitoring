@@ -54,3 +54,13 @@ def test_system_info_values_types():
     assert isinstance(data["storage_usage"], dict)
     assert isinstance(data["network_usage"], dict)
     assert isinstance(data["system_uptime"], (int, float))
+
+def test_live_endpoint():
+    r = requests.get("http://localhost:5000/health/live", timeout=2)
+    assert r.status_code == 200
+    assert r.json() == {"status": "alive"}
+
+
+def test_ready_endpoint():
+    r = requests.get("http://localhost:5000/health/ready", timeout=2)
+    assert r.status_code in (200, 503)
