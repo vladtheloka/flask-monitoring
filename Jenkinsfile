@@ -40,15 +40,30 @@ pipeline {
             }
         }
 
+        stage('Run App in Background') {
+            steps {
+            sh """
+                docker run -d --name restmon_test \
+                -p 5000:5000 \
+                ${IMAGE_NAME}:${TAG}
+            """
+            sh "sleep 3"    // даём время стартовать
+    }
+}
+
         stage('Wait for Health') {
             steps {
                 script {
+                    /* groovylint-disable-next-line NestedBlockDepth */
                     timeout(time: 40, unit: 'SECONDS') {
+                        /* groovylint-disable-next-line NestedBlockDepth */
                         waitUntil {
+                            /* groovylint-disable-next-line NoDef, VariableTypeRequired */
                             def status = sh(
+                                /* groovylint-disable-next-line LineLength */
                                 script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:5000/health/live || true",
                                 returnStdout: true).trim()
-                                return (status == "200")
+                                return (status == '200')
                 }
             }
         }
@@ -92,6 +107,7 @@ pipeline {
     post {
         always {
             echo 'Pipeline finished.'
+            sh 'docker rm -f restmon_test || true' // Stop and remove test container
             cleanWs() // Clean workspace after build
         }
     }
