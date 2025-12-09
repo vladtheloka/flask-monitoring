@@ -55,13 +55,13 @@ pipeline {
             steps {
                 script {
                     /* groovylint-disable-next-line NestedBlockDepth */
-                    timeout(time: 40, unit: 'SECONDS') {
+                    timeout(time: 80, unit: 'SECONDS') {
                         /* groovylint-disable-next-line NestedBlockDepth */
                         waitUntil {
                             /* groovylint-disable-next-line NoDef, VariableTypeRequired */
                             def status = sh(
                                 /* groovylint-disable-next-line LineLength */
-                                script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:5000/health/live || true",
+                                script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:5000//health/live || true",
                                 returnStdout: true).trim()
                                 return (status == '200')
                 }
