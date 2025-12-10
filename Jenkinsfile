@@ -54,7 +54,8 @@ pipeline {
                 script {
                     /* groovylint-disable-next-line NestedBlockDepth */
                     waitUntil {
-                        sh 'wget --spider http://localhost:5000/health/live'
+                        sh 'curl -f http://localhost:5000/health/live'
+                        sh 'curl -f http://localhost:5000/health/ready'
                         return true
                     }
                 }
