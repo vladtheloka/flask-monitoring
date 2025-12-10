@@ -56,7 +56,6 @@ pipeline {
                         return true
                     }
                 }
-            }
         }
 
         stage('Remove container') {
@@ -98,10 +97,10 @@ pipeline {
             }
         }*/
     }
-
     post {
         always {
             echo 'Pipeline finished.'
             cleanWs() // Clean workspace after build
         }
     }
+}
