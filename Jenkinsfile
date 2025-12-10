@@ -43,7 +43,9 @@ pipeline {
         stage('Run App in Background') {
             steps {
                 sh """
-                docker run -p 5000:5000 -d --name restmon_test \
+                docker run -d --rm \
+                --name restmon_test \
+                -p 5000:5000 \
                 ${IMAGE_NAME}:${TAG}
             """
             }
@@ -56,7 +58,7 @@ pipeline {
                     /* groovylint-disable-next-line NestedBlockDepth */
                         retry(30) {
                             sh 'curl -sSf http://localhost:5000/health/live > /dev/null'
-                            sh 'curl -sSf http://localhost:5000/health/ready > /dev/nulle'
+                            sh 'curl -sSf http://localhost:5000/health/ready > /dev/null'
                          }
                     }
                 }
