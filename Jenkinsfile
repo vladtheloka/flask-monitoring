@@ -57,8 +57,8 @@ pipeline {
                     timeout(time: 40, unit: 'SECONDS') {
                     /* groovylint-disable-next-line NestedBlockDepth */
                         retry(30) {
-                            sh 'curl -sSf http://localhost:5000/health/live > /dev/null'
-                            sh 'curl -sSf http://localhost:5000/health/ready > /dev/null'
+                            sh 'curl -sSf http://localhost:5001/health/live > /dev/null'
+                            sh 'curl -sSf http://localhost:5001/health/ready > /dev/null'
                          }
                     }
                 }
