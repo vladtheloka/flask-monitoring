@@ -52,15 +52,17 @@ pipeline {
         stage('Wait for Health') {
             steps {
                 script {
+                    timeout(time: 40, unit: 'SECONDS') {
                     /* groovylint-disable-next-line NestedBlockDepth */
                     waitUntil {
                         sh 'curl -f http://localhost:5000/health/live'
                         sh 'curl -f http://localhost:5000/health/ready'
                         return true
+                        }
                     }
                 }
             }
-        }
+    }
 
         stage('Remove container') {
             steps {
