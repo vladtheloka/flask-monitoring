@@ -51,11 +51,14 @@ pipeline {
 
         stage('Wait for Health') {
             steps {
-                waitUntil {
+                script {
+                    /* groovylint-disable-next-line NestedBlockDepth */
+                    waitUntil {
                         sh 'wget --spider http://localhost:5000/health/live'
                         return true
                     }
                 }
+            }
         }
 
         stage('Remove container') {
