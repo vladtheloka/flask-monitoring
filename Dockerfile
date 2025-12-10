@@ -24,10 +24,6 @@ COPY coverage/ ./coverage/
 COPY pyproject.toml .
 COPY .coveragerc .
 
-EXPOSE 5000 
-
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget --spider -q http://localhost:5000/health/live || exit 1
-
+EXPOSE 5000
 # Start integration test runner
 CMD ["python3", "-m", "restmon.__main__"]

@@ -43,7 +43,7 @@ pipeline {
         stage('Run App in Background') {
             steps {
                 sh """
-                docker run -d --name restmon_test \
+                docker run -p 5000:5000 -d --name restmon_test \
                 ${IMAGE_NAME}:${TAG}
             """
             }
