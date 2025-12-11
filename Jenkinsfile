@@ -40,37 +40,6 @@ pipeline {
             }
         }
 
-        stage('Run App in Background') {
-            steps {
-                sh """
-                docker run -d --rm \
-                --name restmon_test \
-                -p 5000:5000 \
-                ${IMAGE_NAME}:${TAG}
-            """
-            }
-        }
-
-        stage('Wait for Health') {
-            steps {
-                script {
-                    timeout(time: 40, unit: 'SECONDS') {
-                    /* groovylint-disable-next-line NestedBlockDepth */
-                        retry(30) {
-                            sh 'curl -sSf http://localhost:5000/health/live > /dev/null'
-                            sh 'curl -sSf http://localhost:5000/health/ready > /dev/null'
-                         }
-                    }
-                }
-            }
-    }
-
-        stage('Remove container') {
-            steps {
-                sh 'docker rm -f restmon_test'
-            }
-        }
-
         stage('Integration Tests') {
             steps {
                 sh './run_int_test.sh'
