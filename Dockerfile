@@ -10,6 +10,8 @@ WORKDIR /app
 # Копируем только requirements для кэширования зависимостей
 COPY requirements.txt .
 
+RUN apt-get update
+RUN apt-get --yes install curl
 # Устанавливаем зависимости с использованием кэша
 RUN python3 -m pip install --no-cache-dir -r requirements.txt \
     --cache-dir $PIP_CACHE_DIR
@@ -25,5 +27,8 @@ COPY pyproject.toml .
 COPY .coveragerc .
 
 EXPOSE 5000
+
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+CMD curl --silent --fail http://localhost:5000/health/live || exit 1
 # Start integration test runner
 CMD ["python3", "-m", "restmon.__main__"]
