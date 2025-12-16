@@ -1,7 +1,9 @@
 # restmon/metrics.py
+from flask import make_response, Response
 from flask_restful import Resource
 from typing import List
 import time
+
 from restmon.resources import SystemResources
 
 START_TIME = time.time()
@@ -10,7 +12,7 @@ START_TIME = time.time()
 class Metrics(Resource):
     """Prometheus-compatible metrics endpoint."""
 
-    def get(self) -> str:
+    def get(self) -> Response:
         uptime = time.time() - START_TIME
         mem = SystemResources.get_memory_usage()
         disk = SystemResources.get_storage_usage()
@@ -39,6 +41,11 @@ class Metrics(Resource):
             "# HELP process_count Number of running processes",
             "# TYPE process_count gauge",
             f"process_count {SystemResources.get_process_count()}",
+            "",
         ]
 
-        return "\n".join(lines), 200, {"Content-Type": "text/plain; version=0.0.4"} # type: ignore
+        body = '\n'.join(lines) + '\n'
+        response = make_response(body, 200)
+        response.mimetype = "text/plain"
+        response.headers["Content-Type"] = "text/plain; version=0.0.4; charset=utf-8"
+        return response
