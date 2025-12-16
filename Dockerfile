@@ -31,4 +31,4 @@ EXPOSE 5000
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
 CMD curl --silent --fail http://localhost:5000/health/live || exit 1
 # Start integration test runner
-CMD ["python3", "-m", "restmon.__main__"]
+CMD ["gunicorn", "-c", "gunicorn.conf.py", "restmon.api:create_app()"]
