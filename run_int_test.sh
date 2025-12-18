@@ -54,5 +54,5 @@ docker exec $CONTAINER python3 -m pytest -v tests_integration
 echo "[✔] Integration tests executed successfully!"
 
 # Clean up
-docker rm -f restmon_test
+docker rm -f $CONTAINER
 echo "[✔] Cleaned up the container!"
