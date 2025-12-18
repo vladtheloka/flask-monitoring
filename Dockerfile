@@ -25,10 +25,11 @@ COPY run_int_test.sh .
 COPY coverage/ ./coverage/
 COPY pyproject.toml .
 COPY .coveragerc .
+COPY gunicorn_conf.py .
 
 EXPOSE 5000
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
 CMD curl --silent --fail http://localhost:5000/health/live || exit 1
 # Start integration test runner
-CMD ["gunicorn", "-c", "gunicorn.conf.py", "restmon.api:create_app()"]
+CMD ["gunicorn", "-c", "gunicorn_conf.py", "restmon.api:create_app()"]
