@@ -33,8 +33,7 @@ pipeline {
         stage('Run Unit Tests') {
             steps {
                 sh """
-                    rm -rf coverage
-                    mkdir -p coverage
+                    rm -rf coverage || true
                     docker run --rm \
                     ${IMAGE_NAME}:${TAG} \
                     python3 -m pytest -v --cov=restmon --cov-report=xml:coverage/coverage.xml tests
