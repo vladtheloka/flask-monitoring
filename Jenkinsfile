@@ -33,9 +33,14 @@ pipeline {
         stage('Run Unit Tests') {
             steps {
                 sh """
+                    mkdir -p coverage \
+                    -v "\$PWD/coverage:/app/coverage" \
                     docker run --rm \
                     ${IMAGE_NAME}:${TAG} \
-                    python3 -m pytest -v --cov=restmon --cov-report=xml:coverage/coverage.xml tests
+                    python3 -m pytest -v \
+                    --cov=restmon \
+                    --cov-report=xml:coverage/coverage.xml \
+                    tests
                     echo "=== Coverage files ==="
                     find . -name "coverage.xml"
                     ls -lah coverage || true
