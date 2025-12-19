@@ -39,7 +39,7 @@ pipeline {
                     ${IMAGE_NAME}:${TAG} \
                     python3 -m pytest -v \
                     --cov=restmon \
-                    --cov-report=xml:coverage/coverage.xml \
+                    --cov-report=xml:/app/coverage/coverage.xml \
                     tests
                     echo "=== Coverage files ==="
                     find . -name "coverage.xml"
