@@ -33,9 +33,9 @@ pipeline {
         stage('Run Unit Tests') {
             steps {
                 sh """
-                    mkdir -p coverage \
-                    -v "\$PWD/coverage:/app/coverage" \
+                    mkdir -p coverage
                     docker run --rm \
+                    -v "\$PWD/coverage:/app/coverage" \
                     ${IMAGE_NAME}:${TAG} \
                     python3 -m pytest -v \
                     --cov=restmon \
