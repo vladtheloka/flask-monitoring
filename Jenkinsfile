@@ -42,8 +42,8 @@ pipeline {
                     --cov-report=xml:/app/coverage/coverage.xml \
                     tests
                     echo "=== Coverage files ==="
-                    find . -name "coverage.xml"
-                    ls -lah coverage || true
+                    find coverage type -f
+                    ls -lah coverage
                 """
             }
         }
