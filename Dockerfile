@@ -22,7 +22,6 @@ COPY tests ./tests/
 COPY tests_integration ./tests_integration/
 COPY pytest.ini .
 COPY run_int_test.sh .
-COPY coverage/ ./coverage/
 COPY pyproject.toml .
 COPY .coveragerc .
 COPY gunicorn_conf.py .
