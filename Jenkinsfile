@@ -36,7 +36,10 @@ pipeline {
                     rm -rf coverage || true
                     docker run --rm \
                     ${IMAGE_NAME}:${TAG} \
-                    python3 -m pytest -v --cov=restmon --cov-report=xml:coverage.xml tests
+                    python3 -m pytest -v --cov=restmon --cov-report=xml:coverage/coverage.xml tests
+                    echo "=== Coverage files ==="
+                    find . -name "coverage.xml"
+                    ls -lah coverage || true
                 """
             }
         }
