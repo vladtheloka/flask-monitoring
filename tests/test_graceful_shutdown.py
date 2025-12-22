@@ -2,7 +2,7 @@ import signal
 import pytest
 from restmon.state import mark_shutting_down
 from flask.testing import FlaskClient
-from restmon.signal_handlers import _handle_sigterm # type: ignore
+from restmon.lifecycle import _handle_sigterm # type: ignore
 from restmon.state import is_shutting_down
 
 def test_ready_turns_not_ready_on_shutdown(
