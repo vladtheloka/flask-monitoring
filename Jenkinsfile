@@ -32,14 +32,16 @@ pipeline {
 
         stage('Run Unit Tests') {
             steps {
-                script{
+                script  {
                     /* groovylint-disable-next-line GStringExpressionWithinString, NestedBlockDepth */
-                    docker.image('${IMAGE_NAME}:${TAG}').withRun('-u root') {
-                        c ->
-                        sh "docker exec ${c.id} python3 -m pytest -v --cov=restmon --cov-report=xml:coverage.xml tests"
-                        sh "docker cp ${c.id}:/app/coverage.xml ."
+                    docker.image("${IMAGE_NAME}:${TAG}").withRun('-u root') {   c ->
+                        sh "docker exec ${c.id} python3 -m pytest -v \
+                            --cov=restmon \
+                            --cov-report=xml:coverage.xml \
+                            tests"
+                        sh "docker cp ${c.id}:/app/coverage.xml coverage.xml"
                         echo '=== Coverage files ==='
-                        sh 'find coverage -type f && ls -lah coverage'
+                        sh 'ls -lah coverage'
                     }
                 }
             }
