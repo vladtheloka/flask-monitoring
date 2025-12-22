@@ -5,7 +5,7 @@ from typing import Any, Dict
 from restmon.resources import SystemResources
 from restmon.health import Live, Ready
 from restmon.metrics import Metrics
-from restmon.lifecycle import setup_signal_handlers
+from restmon.signal_handlers import setup_signal_handlers
 
 def create_app() -> Flask:
     app = Flask(__name__)

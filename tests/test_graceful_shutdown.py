@@ -14,7 +14,7 @@ def test_ready_turns_not_ready_on_shutdown(
     class FakeSR:
         @staticmethod
         def get_system_uptime():
-            return 123
+            return 12345
 
 
     monkeypatch.setattr(
