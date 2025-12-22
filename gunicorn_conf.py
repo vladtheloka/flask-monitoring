@@ -8,3 +8,6 @@ accesslog = "-"
 errorlog = "-"
 
 preload_app = True
+
+def worker_exit(server, worker): # type: ignore
+    server.log.info("Worker exiting gracefully") # type: ignore
