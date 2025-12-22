@@ -37,11 +37,11 @@ pipeline {
                     docker.image("${IMAGE_NAME}:${TAG}").withRun('-u root') {   c ->
                         sh "docker exec ${c.id} python3 -m pytest -v \
                             --cov=restmon \
-                            --cov-report=xml:coverage.xml \
+                            --cov-report=xml:/app/coverage.xml \
                             tests"
                         sh "docker cp ${c.id}:/app/coverage.xml coverage.xml"
                         echo '=== Coverage files ==='
-                        sh 'ls -lah coverage'
+                        sh 'ls -lah coverage.xml'
                     }
                 }
             }
