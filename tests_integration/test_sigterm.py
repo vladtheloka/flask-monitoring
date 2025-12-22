@@ -1,7 +1,6 @@
 import subprocess
 import time
 import requests
-import signal
 
 BASE = "http://localhost:5000"
 
