@@ -1,10 +1,27 @@
 import signal
+import pytest
 from restmon.state import mark_shutting_down
 from flask.testing import FlaskClient
 from restmon.lifecycle import _handle_sigterm # type: ignore
 from restmon.state import is_shutting_down
 
-def test_ready_turns_not_ready_on_shutdown(client: FlaskClient):
+def test_ready_turns_not_ready_on_shutdown(
+        client: FlaskClient,
+        monkeypatch: pytest.MonkeyPatch, 
+        ):
+
+    # force system healty
+    class FakeSR:
+        @staticmethod
+        def get_system_uptime():
+            return 123
+
+
+    monkeypatch.setattr(
+        "restmon.health.SystemResources",
+        FakeSR
+    )
+
     # initially ready
     r1 = client.get("/health/ready")
     assert r1.status_code == 200
