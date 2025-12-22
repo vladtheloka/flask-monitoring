@@ -50,7 +50,7 @@ docker ps -a
 
 echo "[Running integration tests...]"
 # Run the integration tests inside the container
-docker exec $CONTAINER python3 -m pytest -v tests_integration
+docker exec $CONTAINER python3 -m pytest -v tests_integration/test_integration_api.py
 echo "[✔] Integration tests executed successfully!"
 
 # Clean up

@@ -1,11 +1,19 @@
 import subprocess
 import time
 import requests
+import pytest
+import shutil
 
 BASE = "http://localhost:5000"
 
+docker_available = shutil.which("docker") is not None
 
-def wait_ready(expected=200, timeout=20):
+pytestmark = pytest.mark.skipif(
+    not docker_available,
+    reason="Docker CLI not available",
+)
+
+def wait_ready(expected: int = 200, timeout: int = 20):
     for _ in range(timeout):
         try:
             r = requests.get(f"{BASE}/health/ready")
