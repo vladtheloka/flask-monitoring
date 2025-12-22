@@ -32,19 +32,15 @@ pipeline {
 
         stage('Run Unit Tests') {
             steps {
-                sh """
-                    mkdir -p coverage
-                    docker exec \
-                    ${IMAGE_NAME}:${TAG} \
-                    python3 -m pytest -v \
-                    --cov=restmon \
-                    --cov-report=xml:coverage.xml \
-                    tests
-                    docker cp ${IMAGE_NAME}:${TAG}.id /app/coverage.xml .
-                    echo "=== Coverage files ==="
-                    find coverage -type f
-                    ls -lah coverage
-                """
+                script{
+                    docker.image(${IMAGE_NAME}:${TAG}).withRun('-u root'){
+                        c ->
+                        sh "docker exec ${c.id} python3 -m pytest -v --cov=restmon --cov-report=xml:coverage.xml tests"
+                        sh "docker cp ${c.id}:/app/coverage.xml ."
+                        echo "=== Coverage files ==="
+                        sh "find coverage -type f && ls -lah coverage"
+                    }
+                }
             }
         }
 
