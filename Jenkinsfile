@@ -62,7 +62,7 @@ pipeline {
                                 -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
                                 -Dsonar.sources=restmon \
                                 -Dsonasr.tests=tests \
-                                -Dsonar.python.coverage.reportPaths=coverage/coverage.xml \
+                                -Dsonar.python.coverage.reportPaths=coverage.xml \
                                 -Dsonar.sourceEncoding=UTF-8 \
                                 -Dsonar.python.version=3.12 \
                                 -Dsonar.tests=tests \
