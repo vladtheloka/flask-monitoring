@@ -37,7 +37,7 @@ pipeline {
                     docker.image("${IMAGE_NAME}:${TAG}").withRun('-u root') {   c ->
                         sh "docker exec ${c.id} python3 -m pytest -v \
                             --cov=restmon \
-                            --cov-config=.coveragearc \
+                            --cov-config=.coveragerc \
                             --cov-report=xml:/app/coverage.xml \
                             tests"
                         sh "docker cp ${c.id}:/app/coverage.xml coverage.xml"
