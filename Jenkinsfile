@@ -56,6 +56,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
+                        sh "sed -i 's|<source>/app/restmon</source>|<source>restmon</source>|g' coverage.xml"
                         sh """
                             ${tool('SonarScanner')}/bin/sonar-scanner \
                                 -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
