@@ -45,3 +45,17 @@ def test_sigterm_handler():
 
     _handle_sigterm(signal.SIGTERM, None)
     assert is_shutting_down() is True
+
+def test_ready_not_ready_if_uptime_zero(
+        client: FlaskClient, 
+        monkeypatch: pytest.MonkeyPatch):
+    
+    class FakeSR:
+        @staticmethod
+        def get_system_uptime():
+            return 0
+
+    monkeypatch.setattr("restmon.health.SystemResources", FakeSR)
+
+    r = client.get("/health/ready")
+    assert r.status_code == 503

@@ -1,8 +1,7 @@
 from flask_restful import Resource
 from typing import Dict
 from restmon.resources import SystemResources
-from restmon.state import is_shutting_down
-
+from restmon import state
 
 class Live(Resource):
     def get(self) -> Dict[str, str]:
@@ -11,7 +10,7 @@ class Live(Resource):
 
 class Ready(Resource):
     def get(self):
-        if not is_shutting_down():
+        if state.is_shutting_down():
             return {"status": "not_ready"}, 503
 
         try:
@@ -20,4 +19,6 @@ class Ready(Resource):
                 return {"status": "ready"}, 200
             return {"status": "not_ready"}, 503
         except Exception:
-            return {"status": "not_ready"}, 503
+            pass
+        
+        return {"status": "not_ready"}, 503
