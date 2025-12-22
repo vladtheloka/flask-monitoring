@@ -33,10 +33,11 @@ pipeline {
         stage('Run Unit Tests') {
             steps {
                 script  {
-                    /* groovylint-disable-next-line GStringExpressionWithinString, NestedBlockDepth */
+                    /* groovylint-disable-next-line NestedBlockDepth */
                     docker.image("${IMAGE_NAME}:${TAG}").withRun('-u root') {   c ->
                         sh "docker exec ${c.id} python3 -m pytest -v \
                             --cov=restmon \
+                            --cov-config=.coveragearc \
                             --cov-report=xml:/app/coverage.xml \
                             tests"
                         sh "docker cp ${c.id}:/app/coverage.xml coverage.xml"
@@ -56,7 +57,6 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                        sh "sed -i 's|<source>/app/restmon</source>|<source>restmon</source>|g' coverage.xml"
                         sh """
                             ${tool('SonarScanner')}/bin/sonar-scanner \
                                 -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
