@@ -34,13 +34,13 @@ pipeline {
             steps {
                 sh """
                     mkdir -p coverage
-                    docker run --rm \
-                    -v "\$PWD/coverage:/app/coverage" \
+                    docker exec \
                     ${IMAGE_NAME}:${TAG} \
                     python3 -m pytest -v \
                     --cov=restmon \
-                    --cov-report=xml:/app/coverage/coverage.xml \
+                    --cov-report=xml:coverage.xml \
                     tests
+                    docker cp ${IMAGE_NAME}:${TAG}.id /app/coverage.xml .
                     echo "=== Coverage files ==="
                     find coverage -type f
                     ls -lah coverage
