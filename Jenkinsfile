@@ -57,7 +57,7 @@ pipeline {
         stage('SIGTERM lifecycle') {
             steps {
                 sh '''
-                    python3 -m pytest -v tests_integration/test_sigterm.py
+                    python3 -m pytest -c /dev/null -v tests_integration/test_sigterm.py
                 '''
             }
         }

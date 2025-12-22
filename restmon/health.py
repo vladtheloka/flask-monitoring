@@ -10,14 +10,13 @@ class Live(Resource):
 
 class Ready(Resource):
     def get(self):
-        if state.is_shutting_down():
+        if state.shutdown_event.is_set():
             return {"status": "not_ready"}, 503
 
         try:
             uptime = SystemResources.get_system_uptime()
             if isinstance(uptime, (int, float)) and uptime > 0: # type: ignore
                 return {"status": "ready"}, 200
-            return {"status": "not_ready"}, 503
         except Exception:
             pass
         

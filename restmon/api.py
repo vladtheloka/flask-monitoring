@@ -6,6 +6,8 @@ from restmon.resources import SystemResources
 from restmon.health import Live, Ready
 from restmon.metrics import Metrics
 from restmon.lifecycle import setup_signal_handlers
+from restmon.state import shutdown_event
+import signal
 
 def create_app() -> Flask:
     app = Flask(__name__)
@@ -13,6 +15,12 @@ def create_app() -> Flask:
     csrf = CSRFProtect()
     csrf.init_app(app) # type: ignore
     api = Api(app)
+
+    def handle_sigterm(*_):
+        shutdown_event.set()
+    
+    signal.signal(signal.SIGTERM, handle_sigterm) # type: ignore
+    signal.signal(signal.SIGINT, handle_sigterm) # type: ignore
 
     api.add_resource(SystemInfo, "/system_info") # type: ignore
     api.add_resource(Live, "/health/live") # type: ignore

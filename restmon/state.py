@@ -5,6 +5,8 @@ _ready = True
 _shutting_down = False
 _lock = threading.Lock()
 
+shutdown_event = threading.Event()
+
 def mark_shutting_down() -> None:
     global _shutting_down
     _shutting_down = True
