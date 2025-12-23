@@ -10,6 +10,7 @@ shutdown_event = threading.Event()
 def mark_shutting_down() -> None:
     global _shutting_down
     _shutting_down = True
+    shutdown_event.set()
 
 def is_shutting_down() -> bool:
     return _shutting_down

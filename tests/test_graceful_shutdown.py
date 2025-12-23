@@ -59,3 +59,12 @@ def test_ready_not_ready_if_uptime_zero(
 
     r = client.get("/health/ready")
     assert r.status_code == 503
+
+def test_ready_respects_shutdown_flag(client: FlaskClient):
+    r1 = client.get("/health/ready")
+    assert r1.status_code == 200
+
+    mark_shutting_down()
+
+    r2 = client.get("/health/ready")
+    assert r2.status_code == 503
