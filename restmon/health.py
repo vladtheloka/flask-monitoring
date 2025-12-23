@@ -1,19 +1,13 @@
 from flask_restful import Resource
-from typing import Dict
-from restmon.resources import SystemResources
-from restmon import state
+from restmon.state import shutdown_event
 
 class Live(Resource):
-    def get(self) -> Dict[str, str]:
-        return {"status": "alive"}
+    def get(self):
+        return {"status": "alive"}, 200
 
 
 class Ready(Resource):
     def get(self):
-        if state.shutdown_event.is_set():
-            return {"status": "not_ready"}, 503
-        try:
-            SystemResources.get_system_uptime()
-        except Exception:
+        if shutdown_event.is_set():
             return {"status": "not_ready"}, 503
         return {"status": "ready"}, 200
