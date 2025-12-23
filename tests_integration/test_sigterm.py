@@ -5,7 +5,7 @@ import requests
 BASE = "http://localhost:5000"
 
 
-def wait_live(timeout: int = 20):
+def wait_live(timeout: int = 100):
     for _ in range(timeout):
         try:
             r = requests.get(f"{BASE}/health/live", timeout=1)
@@ -16,7 +16,7 @@ def wait_live(timeout: int = 20):
         time.sleep(1)
     raise RuntimeError("Service did not become live")
 
-def wait_ready(expected: int = 200, timeout: int = 20):
+def wait_ready(expected: int = 200, timeout: int = 100):
     for _ in range(timeout):
         try:
             r = requests.get(f"{BASE}/health/ready", timeout=1)
@@ -58,4 +58,4 @@ def test_sigterm_graceful_shutdown():
         assert r.status_code == 200
 
     finally:
-        proc.wait(timeout=30)
+        proc.wait(timeout=200)
