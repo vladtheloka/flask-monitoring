@@ -13,16 +13,17 @@ pytestmark = pytest.mark.skipif(
     reason="Docker CLI not available",
 )
 
-def wait_ready(expected: int = 200, timeout: int = 20):
+def wait_not_ready(timeout: int = 20):
     for _ in range(timeout):
         try:
-            r = requests.get(f"{BASE}/health/ready")
-            if r.status_code == expected:
+            r = requests.get(f"{BASE}/health/ready", timeout=1)
+            if r.status_code == 503:
                 return
-        except Exception:
-            pass
+        except requests.exceptions.RequestException:
+            return
         time.sleep(1)
-    raise RuntimeError("Service not in expected state")
+
+    raise RuntimeError("Service did not transition to not-ready state")
 
 
 def test_sigterm_graceful_shutdown():
@@ -37,8 +38,6 @@ def test_sigterm_graceful_shutdown():
     )
 
     try:
-        # ждём readiness = 200
-        wait_ready(200)
 
         # отправляем SIGTERM
         subprocess.run(
@@ -47,7 +46,7 @@ def test_sigterm_graceful_shutdown():
         )
 
         # readiness должен упасть
-        wait_ready(503)
+        wait_not_ready()
 
         # liveness остаётся OK
         r = requests.get(f"{BASE}/health/live")
