@@ -1,7 +1,7 @@
 # tests/test_health.py
 from flask.testing import FlaskClient
 from restmon.state import (
-    mark_shutting_down,
+    shutdown_event,
     reset_shutdown_state,
 )
 
@@ -24,7 +24,7 @@ def test_ready_initially_200(client: FlaskClient):
 def test_ready_returns_503_on_shutdown(client: FlaskClient):
     reset_shutdown_state()
 
-    mark_shutting_down()
+    shutdown_event.set()
 
     r = client.get("/health/ready")
     assert r.status_code == 503
@@ -34,7 +34,7 @@ def test_ready_returns_503_on_shutdown(client: FlaskClient):
 def test_live_ignores_shutdown(client: FlaskClient):
     reset_shutdown_state()
 
-    mark_shutting_down()
+    shutdown_event.set()
 
     r = client.get("/health/live")
     assert r.status_code == 200

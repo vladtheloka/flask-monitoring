@@ -36,7 +36,7 @@ def test_sigterm_graceful_shutdown():
 
     try:
  
-        wait_ready("/hetalth/ready", 200)
+        wait_ready("/health/ready", 200)
 
         subprocess.run(
             ["docker", "kill", "--signal=SIGTERM", "restmon_sigterm_test"],
