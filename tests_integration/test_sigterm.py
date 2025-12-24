@@ -1,23 +1,28 @@
 import subprocess
 import time
 import requests
+import pytest
+import shutil
 
 BASE = "http://localhost:5000"
 
-def wait_ready(expected: int = 200, timeout: int = 20):
+pytestmark = pytest.mark.skipif(
+    shutil.which('docker') is None,
+    reason = 'Docker CLI not avaliable',
+)
+
+def wait_ready(path: str, expected: int, timeout: int = 30):
     last_status = None
     for _ in range(timeout):
         try:
-            r = requests.get(f"{BASE}/health/ready", timeout=1)
+            r = requests.get(f"{BASE}{path}", timeout=1)
             last_status = r.status_code
             if last_status == expected:
-                return "http"
-        except requests.exceptions.ConnectionError:
-            if expected == 503:
-                return "conn_refused"
-
+                return 
+        except requests.RequestException as e:
+            last_status = f"error: {e}"
         time.sleep(1)
-    raise RuntimeError(f"Expected {expected}, but last status was {last_status}")
+    raise RuntimeError(f"{path}: expected {expected}, get {last_status}")
 
 def test_sigterm_graceful_shutdown():
     proc = subprocess.Popen(
@@ -31,18 +36,16 @@ def test_sigterm_graceful_shutdown():
 
     try:
  
-        wait_ready(200)
-
-        r = requests.get(f"{BASE}/health/live", timeout=1)
-        assert r.status_code == 200
+        wait_ready("/hetalth/ready", 200)
 
         subprocess.run(
             ["docker", "kill", "--signal=SIGTERM", "restmon_sigterm_test"],
             check=True,
         )
 
-        result = wait_ready(503)
-        assert result in ("http", "conn_refused")
+        wait_ready("/health/ready", 503)
+
+        wait_ready("/health/live", 200)
 
     finally:
         proc.wait(timeout=30)

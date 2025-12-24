@@ -1,13 +1,15 @@
+# gunicorn_conf.py
+
 bind = "0.0.0.0:5000"
-workers = 2
-threads = 4
-timeout = 60
-graceful_timeout = 30
+workers = 1
+threads = 2
+worker_class = "gthread"
+
+timeout = 30
+graceful_timeout = 20
 
 accesslog = "-"
 errorlog = "-"
+log_vele = "info"
 
-preload_app = True
-
-def worker_exit(server, worker): # type: ignore
-    server.log.info("Worker exiting gracefully") # type: ignore
+preload_app = False
