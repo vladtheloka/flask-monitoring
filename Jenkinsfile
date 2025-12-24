@@ -63,7 +63,7 @@ pipeline {
                 --name ${CONTAINER} \
                 ${IMAGE_NAME}:${TAG}
                 """
-                sh './wait_for_container.sh http://localhost:5000/health/ready 40'
+                sh './wait_for_container.sh'
 
                 sh 'python3 -m pytest -c /dev/null -v tests_integration/test_sigterm.py'
 
