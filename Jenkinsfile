@@ -57,17 +57,7 @@ pipeline {
 
         stage('SIGTERM lifecycle') {
             steps {
-                sh """
-                docker run --rm -d \
-                -p 5000:5000 \
-                --name ${CONTAINER} \
-                ${IMAGE_NAME}:${TAG}
-                """
                 sh './wait_for_container.sh'
-
-                sh 'python3 -m pytest -c /dev/null -v tests_integration/test_sigterm.py'
-
-                sh "docker stop '${CONTAINER}' || True"
             }
         }
 

@@ -1,18 +1,58 @@
-#!/usr/bin/env bash
+#!/bin/bash
 set -e
 
-URL=${1:-http://localhost:5000/health/ready}
-TIMEOUT=${2:-30}
+IMAGE="restmon:latest"
+CONTAINER="restmon_sigterm_test"
 
-echo "[wait] Waiting for $URL"
+echo "[Starting container for integration tests...]"
 
-for i in $(seq 1 $TIMEOUT); do
-  if curl -sf "$URL" > /dev/null; then
-    echo "[wait] Service is ready"
-    exit 0
+docker rm -f $CONTAINER >/dev/null 2>&1 || true
+
+# Run the container in the background
+docker run -d \
+--name $CONTAINER \
+-p 5000:5000 \
+$IMAGE
+
+echo "[Waiting for container health...]"
+
+# ⬇️ КЛЮЧЕВОЙ МОМЕНТ
+for i in {1..30}; do
+  STATUS=$(docker inspect \
+    --format='{{.State.Health.Status}}' \
+    $CONTAINER)
+
+  echo "Health status: $STATUS"
+
+  if [ "$STATUS" = "healthy" ]; then
+    echo "[✔] Container is healthy!"
+    break
   fi
+
+  if [ "$STATUS" = "unhealthy" ]; then
+    echo "[✖] Container became unhealthy"
+    docker logs $CONTAINER
+    exit 1
+  fi
+
   sleep 1
 done
 
-echo "[wait] Timeout waiting for service"
-exit 1
+if [ "$STATUS" != "healthy" ]; then
+  echo "[✖] Container did not become healthy in time"
+  docker logs $CONTAINER
+  exit 1
+fi
+
+echo "[✔] Container started successfully!"
+
+docker ps -a
+
+echo "[Running integration tests...]"
+# Run the integration tests inside the container
+docker exec $CONTAINER python3 -m pytest -c /dev/null/ -v tests_integration/test_sigterm.py
+echo "[✔] Integration tests executed successfully!"
+
+# Clean up
+docker rm -f $CONTAINER
+echo "[✔] Cleaned up the container!"
