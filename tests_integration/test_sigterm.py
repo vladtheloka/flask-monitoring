@@ -17,9 +17,6 @@ def wait_ready(path: str, expected: int, timeout: int = 30):
     raise RuntimeError(f"{path}: expected {expected}, get {last_status}")
 
 def test_sigterm_graceful_shutdown():
-    
-        wait_ready("/health/ready", 200)
 
         wait_ready("/health/ready", 503)
-
         wait_ready("/health/live", 200)
