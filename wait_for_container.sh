@@ -48,6 +48,11 @@ echo "[✔] Container started successfully!"
 
 docker ps -a
 
+echo "Sending SIGTERM"
+docker kill --signal=SIGTERM $CONTAINER
+
+sleep 1
+
 echo "[Running sigterm test...]"
 # Run the integration tests inside the container
 docker exec $CONTAINER python3 -m pytest -c /dev/null/ -v tests_integration/test_sigterm.py

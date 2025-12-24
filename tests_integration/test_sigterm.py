@@ -1,4 +1,3 @@
-import subprocess
 import time
 import requests
 
@@ -20,11 +19,6 @@ def wait_ready(path: str, expected: int, timeout: int = 30):
 def test_sigterm_graceful_shutdown():
     
         wait_ready("/health/ready", 200)
-
-        subprocess.run(
-            ["docker", "kill", "--signal=SIGTERM", "restmon_sigterm_test"],
-            check=True,
-        )
 
         wait_ready("/health/ready", 503)
 
