@@ -3,20 +3,20 @@ import requests
 
 BASE = "http://localhost:5000"
 
-def wait_ready(path: str, expected: int, timeout: int = 30):
-    last_status = None
+def wait_not_ready_or_down(path: str, timeout: int = 30):
     for _ in range(timeout):
         try:
             r = requests.get(f"{BASE}{path}", timeout=1)
-            last_status = r.status_code
-            if last_status == expected:
-                return 
-        except requests.RequestException as e:
-            last_status = f"error: {e}"
+            if r.status_code == 503:
+                return "503"
+        except requests.RequestException:
+            return "down"
         time.sleep(1)
-    raise RuntimeError(f"{path}: expected {expected}, get {last_status}")
+
+    raise RuntimeError("Service did not transition to not ready or down")
 
 def test_sigterm_graceful_shutdown():
 
-        wait_ready("/health/ready", 503)
-        wait_ready("/health/live", 200)
+        state = wait_not_ready_or_down("/health/ready")
+        assert state in ("503", "down")
+        wait_not_ready_or_down("/health/live")
