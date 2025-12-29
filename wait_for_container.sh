@@ -4,7 +4,7 @@ set -e
 IMAGE="restmon:latest"
 CONTAINER="restmon_sigterm_test"
 
-echo "[Starting container for integration tests...]"
+echo "[Starting container for SIGTERM test...]"
 
 docker rm -f $CONTAINER >/dev/null 2>&1 || true
 

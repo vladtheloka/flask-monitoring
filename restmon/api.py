@@ -6,6 +6,9 @@ from restmon.resources import SystemResources
 from restmon.health import Live, Ready
 from restmon.metrics import Metrics
 from restmon.lifecycle import setup_signal_handlers
+import time
+from restmon.state import shutdown_event
+from fastapi import HTTPException
 
 def create_app() -> Flask:
     app = Flask(__name__)
@@ -18,6 +21,18 @@ def create_app() -> Flask:
     api.add_resource(Live, "/health/live") # type: ignore
     api.add_resource(Ready, "/health/ready") # type: ignore
     api.add_resource(Metrics, "/metrics") # type: ignore
+    
+    @app.get("/slow")
+    def slow() -> Dict[str, str]:  # type: ignore
+        for _ in range(10):
+            if shutdown_event.is_set():
+                raise HTTPException(
+                    status_code=503,
+                    detail="Shutting down"
+                )
+        time.sleep(1)
+        
+        return {"status": "finished"}
     
     return app
 
@@ -32,4 +47,4 @@ class SystemInfo(Resource):
             "storage_usage": SystemResources.get_storage_usage(),
             "network_usage": SystemResources.get_network_usage(),
             "system_uptime": SystemResources.get_system_uptime(),
-        }
+}
