@@ -28,7 +28,7 @@ def test_ready_returns_503_on_shutdown(client: FlaskClient):
 
     r = client.get("/health/ready")
     assert r.status_code == 503
-    assert r.json["status"] == "not_ready" # type: ignore
+    assert r.json["status"] == "shutting_down" # type: ignore
 
 
 def test_live_ignores_shutdown(client: FlaskClient):
