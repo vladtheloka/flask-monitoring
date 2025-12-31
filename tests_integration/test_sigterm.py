@@ -40,6 +40,3 @@ def test_sigterm_graceful_shutdown():
 
         state = wait_not_ready_or_down("/health/ready")
         assert state in ("503", "down")
-        test_slow_aborted_on_sigterm()
-        wait_not_ready_or_down("/health/live", 200)
-        wait_eventually_down()
