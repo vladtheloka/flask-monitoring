@@ -5,7 +5,7 @@ workers = 1
 threads = 2
 worker_class = "gthread"
 
-timeout = 30
+timeout = 60
 graceful_timeout = 30
 
 accesslog = "-"

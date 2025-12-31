@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, abort
 from flask_restful import Api, Resource
 from flask_wtf.csrf import CSRFProtect
 from typing import Any, Dict
@@ -6,6 +6,8 @@ from restmon.resources import SystemResources
 from restmon.health import Live, Ready
 from restmon.metrics import Metrics
 from restmon.lifecycle import setup_signal_handlers
+import time
+from restmon.state import shutdown_event
 from restmon.shutdown_middleware import shutdown_middleware
 
 def create_app() -> Flask:
@@ -21,6 +23,15 @@ def create_app() -> Flask:
     api.add_resource(Ready, "/health/ready") # type: ignore
     api.add_resource(Metrics, "/metrics") # type: ignore
     
+    @app.route("/slow") # type: ignore
+    def slow():  # type: ignore
+        if shutdown_event.is_set():
+            abort(503, description="shutting down")
+
+        time.sleep(10)
+
+        return {"status": "finished"}, 200
+
     return app
 
 class SystemInfo(Resource):
