@@ -44,6 +44,6 @@ def test_sigterm_during_slow_request():
     assert state in ("503", "down")
 
     t.join(timeout=20)
-    assert slow_result["status"] in ("error", 200, 503)
+    assert slow_result["status"] in (200, 503)
 
     wait_eventually_down()

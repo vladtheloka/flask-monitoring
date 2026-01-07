@@ -4,3 +4,4 @@ tests_integration/__pycache__
 restmon/__pycache__
 tests/__pycache__
 coverage/
+typings/

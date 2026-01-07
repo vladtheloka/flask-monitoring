@@ -1,4 +1,4 @@
-from flask import Flask, abort
+from flask import Flask
 from flask_restful import Api, Resource
 from flask_wtf.csrf import CSRFProtect
 from typing import Any, Dict
@@ -24,11 +24,11 @@ def create_app() -> Flask:
     api.add_resource(Metrics, "/metrics") # type: ignore
     
     @app.route("/slow") # type: ignore
-    def slow():  # type: ignore
-        if shutdown_event.is_set():
-            abort(503, description="shutting down")
-
-        time.sleep(10)
+    def slow() -> tuple[Dict[str, str], int]: # type: ignore
+        for _ in range(10):  # type: ignore
+            if shutdown_event.is_set():
+                return {"status": "aboprted"}, 503
+            time.sleep(1)
 
         return {"status": "finished"}, 200
 
