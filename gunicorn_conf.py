@@ -12,4 +12,4 @@ accesslog = "-"
 errorlog = "-"
 log_vele = "info"
 
-preload_app = False
+preload_app = True

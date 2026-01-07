@@ -11,5 +11,5 @@ def setup_signal_handlers() -> None:
     signal.signal(signal.SIGINT, _handle_shutdown) # type: ignore
 
 def _handle_shutdown(signum, frame): # type: ignore
-        log.info("Received signal %s, entering shudown", signum) # type: ignore
+        log.warning("Received signal, entering graceful shutdown")
         shutdown_event.set()
