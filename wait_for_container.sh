@@ -55,7 +55,7 @@ sleep 1
 
 echo "[Running sigterm test...]"
 # Run the integration tests inside the container
-python3 -m pytest -c /dev/null/ -v tests_integration/test_sigterm.py
+python3 -m pytest -c /dev/null/ -v tests_integration/test_slow_shutdown.py
 echo "[✔] SIGTERM test executed successfully!"
 
 # Clean up

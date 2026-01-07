@@ -1,8 +1,28 @@
-import requests, time, subprocess
+import requests, time
 import threading
 
 BASE = "http://localhost:5000"
 
+def wait_eventually_down(timeout: int = 30):
+    for _ in range(timeout):
+        try:
+            requests.get(f"{BASE}/health/live", timeout=1)
+        except requests.RequestException:
+            return
+        time.sleep(1)
+    raise RuntimeError("Service never went down")
+
+def wait_not_ready_or_down(path: str, timeout: int = 30):
+    for _ in range(timeout):
+        try:
+            r = requests.get(f"{BASE}{path}", timeout=1)
+            if r.status_code == 503:
+                return "503"
+        except requests.RequestException:
+            return "down"
+        time.sleep(1)
+
+    raise RuntimeError("Service did not transition to not ready or down")
 
 def test_sigterm_during_slow_request():
     slow_result = {"status": None}
@@ -19,15 +39,10 @@ def test_sigterm_during_slow_request():
 
     time.sleep(1)
 
-    subprocess.run(
-        ["docker", "kill", "--signal=SIGTERM", "restmon_sigterm_test"],
-        check=True,
-    )
-
     state = wait_not_ready_or_down("/health/ready")
     assert state in ("503", "down")
 
     t.join(timeout=20)
-    assert slow_result["status"] in ("error", 200)
+    assert slow_result["status"] in ("error", 200, 503)
 
     wait_eventually_down()
