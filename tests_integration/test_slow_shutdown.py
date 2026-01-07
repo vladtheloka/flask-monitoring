@@ -1,4 +1,5 @@
-import requests, time
+import requests
+import time
 import threading
 
 BASE = "http://localhost:5000"
