@@ -22,17 +22,17 @@ def create_app() -> Flask:
     api.add_resource(Live, "/health/live") # type: ignore
     api.add_resource(Ready, "/health/ready") # type: ignore
     api.add_resource(Metrics, "/metrics") # type: ignore
-    
-    @app.route("/slow") # type: ignore
-    def slow() -> tuple[Dict[str, str], int]: # type: ignore
+
+    return app
+
+class Slow(Resource):
+    def get(self) -> tuple[Dict[str, str], int]: # type: ignore
         for _ in range(10):  # type: ignore
             if shutdown_event.is_set():
                 return {"status": "aboprted"}, 503
             time.sleep(1)
 
         return {"status": "finished"}, 200
-
-    return app
 
 class SystemInfo(Resource):
     """REST endpoint returning system information."""

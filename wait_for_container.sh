@@ -48,8 +48,8 @@ echo "[✔] Container started successfully!"
 
 docker ps -a
 
-echo "Sending SIGTERM"
-docker kill --signal=SIGTERM $CONTAINER
+#echo "Sending SIGTERM"
+#docker kill --signal=SIGTERM $CONTAINER
 
 sleep 1
 

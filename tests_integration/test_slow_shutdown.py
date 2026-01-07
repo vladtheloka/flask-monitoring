@@ -1,6 +1,7 @@
 import requests
 import time
 import threading
+import subprocess
 
 BASE = "http://localhost:5000"
 
@@ -39,6 +40,11 @@ def test_sigterm_during_slow_request():
     t.start()
 
     time.sleep(1)
+
+    subprocess.run(
+        ["docker", "kill", "--signal=SIGTERM", "restmon_sigterm_test"],
+        check=True,
+    )
 
     state = wait_not_ready_or_down("/health/ready")
     assert state in ("503", "down")
