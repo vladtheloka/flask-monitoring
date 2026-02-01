@@ -1,4 +1,5 @@
 # gunicorn_conf.py
+from restmon.lifecycle import initiate_shutdown
 
 bind = "0.0.0.0:5000"
 workers = 1
@@ -15,9 +16,14 @@ log_vele = "info"
 
 preload_app = True
 
+def on_exit(server): # type: ignore
+    initiate_shutdown("gunicorn:on_exit")
+
+def worker_exit(server, worker): # type: ignore
+    initiate_shutdown("gunicorn:worker_exit")
+
 def worker_int(worker): # type: ignore
-    from restmon.state import shutdown_event
-    from restmon.metrics_state import shutdown_in_progress
-    shutdown_event.set()
-    shutdown_in_progress.set(1)
-    worker.log.info("Worker received INT or QUIT signal. Shutting down...") # type: ignore
+    initiate_shutdown("gunicorn:worker_int")
+
+def worker_abort(worker): # type: ignore
+    initiate_shutdown("gunicorn:worker_abort")
