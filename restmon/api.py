@@ -9,6 +9,7 @@ from restmon.lifecycle import setup_signal_handlers
 import time
 from restmon.state import shutdown_event
 from restmon.shutdown_middleware import shutdown_middleware
+from restmon.metrics_state import slow_aborted_total
 
 def create_app() -> Flask:
     app = Flask(__name__)
@@ -22,6 +23,7 @@ def create_app() -> Flask:
     api.add_resource(Live, "/health/live") # type: ignore
     api.add_resource(Ready, "/health/ready") # type: ignore
     api.add_resource(Metrics, "/metrics") # type: ignore
+    api.add_resource(Slow, "/slow") # type: ignore
 
     return app
 
@@ -29,6 +31,7 @@ class Slow(Resource):
     def get(self) -> tuple[Dict[str, str], int]: # type: ignore
         for _ in range(10):  # type: ignore
             if shutdown_event.is_set():
+                slow_aborted_total.inc()
                 return {"status": "aboprted"}, 503
             time.sleep(1)
 
