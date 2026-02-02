@@ -5,7 +5,6 @@ from typing import Any, Dict
 from restmon.resources import SystemResources
 from restmon.health import Live, Ready
 from restmon.metrics import Metrics
-from restmon.lifecycle import setup_signal_handlers
 import time
 from restmon.state import shutdown_event
 from restmon.shutdown_middleware import shutdown_middleware
@@ -13,7 +12,6 @@ from restmon.metrics_state import slow_aborted_total
 
 def create_app() -> Flask:
     app = Flask(__name__)
-    setup_signal_handlers()
     csrf = CSRFProtect()
     csrf.init_app(app) # type: ignore
     app.before_request(shutdown_middleware)
